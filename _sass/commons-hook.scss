@@ -1,0 +1,23 @@
+.preview-img {
+    width: 100%;
+    overflow: hidden;
+  
+    @extend %rounded;
+  
+    &:not(.no-bg) {
+      background: var(--img-bg);
+    }
+  
+    img {
+      -o-object-fit: cover;
+      object-fit: cover;
+      object-position: center;
+  
+      @extend %rounded;
+  
+      @at-root #post-list & {
+        width: 100%;
+      }
+    }
+  }
+  
