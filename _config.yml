@@ -6,6 +6,7 @@ theme: jekyll-theme-chirpy
 plugins:
   - jekyll-linkpreview
   - jekyll-seo-tag
+  - jekyll-feed
 
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
 # If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
@@ -205,3 +206,15 @@ comment-post: https://docs.google.com/forms/d/e/1FAIpQLSdSgNIaBCRCZQgKoyuQ0rLxA8
 comment-read: https://docs.google.com/spreadsheets/d/1w5y95AH-4G8Z6Ru6DHYYBDY6-6RCMrg8rTh17U6_Oek
 
 comment-post-fields: [ entry.98120567, entry.1707311907, entry.664237966]
+
+feed:
+  tags: true
+
+author:
+  twitter: brettfxio
+  name: brett
+  email: brett@functions.io
+
+twitter:
+  username: brettfxio
+  card: summary
