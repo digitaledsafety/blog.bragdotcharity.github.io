@@ -1,5 +1,6 @@
 ---
 image: /assets/img/posts/quinton-coetzee-KFLP2WX-Tk8-unsplash.jpg
+title: Alts Adidas NFT Drop
 tags: [nft, stem]
 ---
 
