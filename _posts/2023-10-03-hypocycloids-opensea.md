@@ -1,6 +1,6 @@
 ---
 image: /assets/img/posts/HNvAxTxE.png
-tags: [nft, steam]
+tags: [nft, stem, steam]
 title: Hypocycloids and Epicycloids NFT Collection
 ---
 

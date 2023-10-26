@@ -1,5 +1,5 @@
 ---
-tags: nft
+tags: [nft, stem, steam]
 image: /assets/img/posts/F9Nmpfoa0AAznxg-700x700.jpeg
 title: Efdot and Amber Vittoria NFT Collection
 ---
