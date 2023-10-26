@@ -167,10 +167,6 @@ defaults:
       path: assets/js/dist
     values:
       swcache: true
-  - scope:
-      path: ""
-    values:
-      image: /assets/img/1.png
 
 sass:
   style: compressed
