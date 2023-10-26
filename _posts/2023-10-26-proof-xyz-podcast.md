@@ -1,6 +1,7 @@
 ---
 tags: nft
 title: Proof XYZ Podcast
+image: /assets/img/posts/new100proof.jpeg
 ---
 
 Check out the Proof XYZ podcast if you're looking for quality daily (and entertaining) NFT coverage!
