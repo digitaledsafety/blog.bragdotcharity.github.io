@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<head>
+	<script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+</head>
+<html>
+<body>
+	<div><video id="video1" hidden="hidden" controls autoplay></video></div>
+	<div id="mycanvas" class="mycanvas">
+		<canvas></canvas>
+	</div>
+	<button onclick="camera()">Cam</button>
+	<button onclick="screen()">Screen</button>
+	<button onclick="audio()">Audio</button>
+	<p id="msg"></p>
+	<p id="peerid"></p>
+	<p id="share"></p>
+	<div>
+		<label>Contact's Peer Id</label>
+		<input id="contactpeerid" type="text" value="" />
+		<button onclick="makeCall()">Call</button>
+	</div>
+	<script>
+		var baseUrl = 'https://brett.functions.io/call';
+		var peer = new Peer();
+		
+		var canvas = document.querySelector("canvas");
+		var stream = canvas.captureStream(30);
+		var context = canvas.getContext("2d", { willReadFrequently: true });
+		
+		var video = document.querySelector('#video1');
+
+		var calls = [];
+		var connections = [];		
+		
+		// After DOM loaded	
+		document.addEventListener("DOMContentLoaded", function(){	
+		        var displayMediaOptions = {
+			        video: true,
+			        audio: true,
+			};			
+			getDevices(displayMediaOptions, function() {
+				initCall();			
+			});
+
+		});		
+
+		video.addEventListener('play', function () {
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;		
+			var $this = this; //cache
+			(function loop() {
+				if (!$this.paused && !$this.ended) {
+					context.drawImage($this, 0, 0);
+					var text = 'functions.io';
+					context.font = "24px arial";
+					var textWidth = context.measureText(text).width;
+					context.globalAlpha = .50;
+					context.fillStyle = 'white'
+					context.fillText(text, canvas.width - textWidth - 10, canvas.height - 20);
+					context.fillStyle = 'black'
+					context.fillText(text, canvas.width - textWidth - 10 + 2, canvas.height - 20 + 2);
+					context.filter = "brightness(170%) contrast(90%)";
+					setTimeout(loop, 1000 / 30); // drawing at 30fps
+				}
+			})();
+		}, 0);
+	
+		// When peer established
+		peer.on('open', function (id) {
+			document.getElementById("peerid").textContent = 'My peer ID is: ' + id;
+			
+			var share = baseUrl + '?phoneNumber=' + id;
+			document.getElementById("share").innerHTML = 'Share this URL: <a href="' + share + '">' + share + '</a>';
+		});	
+	
+		// When called
+		peer.on('call', function (call) {
+			calls.push(call);
+			call.answer(stream); // Answer the call with an A/V stream.
+			call.on('stream', function (remoteStream) {
+				for (key in connections) {
+					connections[key].send(call.peer);
+				}							
+				createVideo(remoteStream);
+			});
+		});
+		
+		// When connected to
+		peer.on('connection', function(connection) { 
+			connections.push(connection);
+		});
+
+		function findGetParameter(parameterName) {
+			var result = null,
+				tmp = [];
+			location.search
+				.substr(1)
+				.split("&")
+				.forEach(function (item) {
+					tmp = item.split("=");
+					if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+				});
+			return result;
+		}
+		
+		function getDevices(options, cb) {		
+			if (!navigator.mediaDevices && !navigator.mediaDevices.getUserMedia) {
+				navigator.userMedia = navigator.mozGetUserMedia || navigator.getUserMedia
+				if (!navigator.userMedia) {
+				      alert("Please Update or Use Different Browser");
+				}
+				
+				navigator.userMedia(options, (stream) => {
+					showCam(stream);
+					cb();
+				})	
+				.catch(error => {
+					alert('Error');
+				});							
+			      return;
+			}
+
+			window.navigator.mediaDevices.getUserMedia(options)
+			.then(stream => {
+				showCam(stream);
+				cb();
+			})
+			.catch(error => {
+				alert('Please enable mic and camera');
+			});
+		}
+	
+		// Look for Peer ID in URL
+		function initCall() {			
+			var phoneNumber = findGetParameter("phoneNumber");
+			if (phoneNumber) {
+				document.querySelector('#contactpeerid').value = phoneNumber;
+				makeCall();
+			}	
+		}		
+			
+		function showCam(stream) {
+			video.srcObject = stream;
+			video.onloadedmetadata = (e) => {
+				video.play();
+			};		
+		}
+	
+		// Build video for incoming streams
+		function createVideo(stream) {
+			var v = document.createElement('video');
+			document.body.appendChild(v);
+			v.srcObject = stream;
+			v.onloadedmetadata = (e) => {
+				v.play();
+			};		
+		}		
+
+		// Make sure not duplicating sessions
+		function peerExists(peerId) {
+			var found = false
+			for(key in calls) {
+				if (calls[key].peer === peerId) {
+					found = true;
+				}
+			}		
+			return found;
+		}
+
+		// Screen sharing options/calls
+		function screen() {
+		        const displayMediaOptions = {
+			        video: {
+			                cursor: "always"
+			        },
+			        audio: false,
+			};
+
+                        try {
+				window.navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
+				.then(stream => {
+					showCam(stream);
+				})
+				.catch(error => {
+					alert('Please select screen to share');
+				});                        	                        
+
+			} catch (err) {
+			        console.error(err);
+                        }			
+		}
+		
+		function camera() {		        
+		        var displayMediaOptions = {
+			        video: true,
+			        audio: true,
+			};			        
+			
+		        getDevices(displayMediaOptions);		        	
+		}		
+
+		// Audio only calls
+		function audio() {
+		        var displayMediaOptions = {
+			        video: false,
+			        audio: true,
+			};		
+		
+		        getDevices(displayMediaOptions);			
+		}		
+
+		// When calling Peer
+		function makeCall() {
+			let contact = document.getElementById("contactpeerid").value;
+			var connection = peer.connect(contact);
+			connections.push(connection);
+			// Receive messages (only peer id for now)
+			connection.on('data', function(data) {
+				// if we don't already have a connection, create call
+				if(!peerExists(data)) {
+					var newCall = peer.call(data, stream);
+					newCall.on('stream', function (newRemoteStream) {
+						createVideo(newRemoteStream);
+					});	
+				}	
+			});			
+			var call = peer.call(contact, stream);
+			calls.push(call);
+			call.on('stream', function (remoteStream) {
+				createVideo(remoteStream);
+			});
+		}
+	</script>
+</body>
+</html>
