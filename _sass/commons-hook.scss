@@ -1,23 +1,39 @@
+// Cover fit preview images - looks better on mobile and more uniform
 .preview-img {
-    width: 100%;
-    overflow: hidden;
-  
+  width: 100%;
+  overflow: hidden;
+
+  @extend %rounded;
+
+  &:not(.no-bg) {
+    background: var(--img-bg);
+  }
+
+  img {
+    -o-object-fit: cover;
+    object-fit: cover;
+    object-position: center;
+
     @extend %rounded;
-  
-    &:not(.no-bg) {
-      background: var(--img-bg);
-    }
-  
-    img {
-      -o-object-fit: cover;
-      object-fit: cover;
-      object-position: center;
-  
-      @extend %rounded;
-  
-      @at-root #post-list & {
-        width: 100%;
-      }
+
+    @at-root #post-list & {
+      width: 100%;
     }
   }
-  
+}
+
+// Cleaning up avatar styles
+#sidebar {
+  .profile-wrapper { 
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  #avatar {
+    width: 10rem;
+    height: 10rem;
+    
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
