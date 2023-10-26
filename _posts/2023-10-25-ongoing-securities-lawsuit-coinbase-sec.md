@@ -1,5 +1,6 @@
 ---
 tags: nft
+image: /assets/img/posts/katie-moum-o0kbc907i20-unsplash.jpg
 ---
 
 > "Coinbase argues that assets like paintings, baseball cards, and cryptocurrencies can be investments but aren’t securities unless they offer a contractual claim related to a business’ future profits or assets, and the SEC hasn’t shown that trades on Coinbase’s platform confer such claims or a financial stake in an enterprise."

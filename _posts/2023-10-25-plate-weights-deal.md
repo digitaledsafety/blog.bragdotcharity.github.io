@@ -1,5 +1,6 @@
 ---
-tags: deals
+tags: [deals, fitness]
+image: /assets/img/posts/sam-sabourin-PiFA6HIAfBA-unsplash.jpg
 ---
 
 GM followers! 🌅

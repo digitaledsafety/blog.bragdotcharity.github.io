@@ -1,6 +1,5 @@
 ---
-layout: post
-date: Oct 5, 2023
+image: /assets/img/posts/quinton-coetzee-KFLP2WX-Tk8-unsplash.jpg
 tags: nft
 ---
 

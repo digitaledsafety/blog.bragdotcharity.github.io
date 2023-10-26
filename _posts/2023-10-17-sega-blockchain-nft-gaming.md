@@ -1,6 +1,5 @@
 ---
-layout: post
-date: Oct 17 2023
+image: /assets/img/posts/jezael-melgoza-FOx3_4_2O1E-unsplash.jpg
 tags: nft
 ---
 

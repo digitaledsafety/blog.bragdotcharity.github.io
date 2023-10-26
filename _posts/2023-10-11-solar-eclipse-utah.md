@@ -1,6 +1,5 @@
 ---
-layout: post
-date: Oct 11 2023
+image: /assets/img/posts/jongsun-lee-F-pSZO_jeE8-unsplash.jpg
 ---
 
 Some solar eclipse tips if you're in Utah!

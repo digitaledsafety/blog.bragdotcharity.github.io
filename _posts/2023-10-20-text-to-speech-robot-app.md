@@ -1,8 +1,3 @@
----
-layout: post
-date: Oct 20 2023
----
-
 I made a text-to-speech app that recites back what you type into a prompt. My kids like to tease me by jumbling letters together and having me read it out loud... 😅
 
 Problem solved! 😇

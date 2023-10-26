@@ -1,6 +1,5 @@
 ---
-layout: post
-date: Oct 3, 2023
+image: /assets/img/posts/HNvAxTxE.png
 tags: nft
 ---
 

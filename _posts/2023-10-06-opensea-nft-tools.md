@@ -1,6 +1,5 @@
 ---
-layout: post
-date: Oct 6 2023
+image: /assets/img/posts/behnam-norouzi-GashUD7J8sg-unsplash.jpg
 tags: nft
 ---
 

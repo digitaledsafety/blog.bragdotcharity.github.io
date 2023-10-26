@@ -1,6 +1,5 @@
 ---
-layout: post
-date: Oct 17 2023
+image: /assets/img/IMG_20231017_213818691_processed.jpg
 comments: false
 ---
 

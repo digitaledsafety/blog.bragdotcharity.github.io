@@ -1,6 +1,5 @@
 ---
-layout: post
-date: Oct 16 2023
+image: /assets/img/posts/igor-bumba-rkaahInFlBg-unsplash.jpg
 tags: nft
 ---
 
