@@ -4,4 +4,4 @@ tags: nft
 
 Interesting to see NFT adoption from outside of usual tech circles! 👍
 
-https://www.bitcoininsider.org/article/230877/how-major-german-firms-mercedes-and-lufthansa-are-using-nfts
+{% linkpreview "https://www.bitcoininsider.org/article/230877/how-major-german-firms-mercedes-and-lufthansa-are-using-nfts" %}
