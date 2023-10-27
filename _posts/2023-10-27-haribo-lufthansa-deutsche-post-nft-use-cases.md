@@ -1,5 +1,6 @@
 ---
 tags: nft
+title: Haribo, Lufthansa, Deutsche Post NFT Use Cases
 ---
 
 Interesting to see NFT adoption from outside of usual tech circles! 👍
