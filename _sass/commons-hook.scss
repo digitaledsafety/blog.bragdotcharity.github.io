@@ -24,6 +24,15 @@
 
 // Cleaning up avatar styles
 #sidebar {
+
+  background: linear-gradient(333deg, #eb6fff, #64ccfd, #013b56);
+  background-size: 200% 200%;
+
+  -webkit-animation: AnimationName 13s ease infinite;
+  -moz-animation: AnimationName 13s ease infinite;
+  -o-animation: AnimationName 13s ease infinite;
+  animation: AnimationName 13s ease infinite;
+
   .profile-wrapper { 
     padding-left: 1.25rem;
     padding-right: 1.25rem;
@@ -36,4 +45,55 @@
     margin-right: auto;
     margin-left: auto;
   }
+}
+
+#sidebar .sidebar-bottom .mode-toggle, #sidebar .sidebar-bottom a,
+#sidebar ul li.nav-item.active .nav-link,
+#sidebar ul li.nav-item a.nav-link:hover {
+  background: rgba( 255, 255, 255, 0.25 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  backdrop-filter: blur( 4px );
+  -webkit-backdrop-filter: blur( 4px );
+  border-radius: 10px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+#panel-wrapper .post-tag:hover {
+  background-color: var(--tag-hover);
+}
+
+#sidebar .sidebar-bottom .mode-toggle:hover,
+#sidebar .sidebar-bottom a:hover,
+#sidebar #eb6fffitle a:hover {
+  color: var(--tag-hover);
+}
+
+
+#search-results a, #search-hints .post-tag, a {
+  color: var(--link-color);
+}
+
+#page-category a:hover, #page-tag a:hover, .post-tags .post-tag:hover, .post-tail-wrapper .license-wrapper>a:hover, #search-results a:hover, #topbar #breadcrumb a:hover, .content a:not(.img-link):hover, .post-meta a:not([class]):hover, #access-lastmod a:hover, footer a:hover {
+  color: var(--post-list-text-color);
+}
+
+@-webkit-keyframes AnimationName {
+  0%{background-position:0% 73%}
+  50%{background-position:100% 28%}
+  100%{background-position:0% 73%}
+}
+@-moz-keyframes AnimationName {
+  0%{background-position:0% 73%}
+  50%{background-position:100% 28%}
+  100%{background-position:0% 73%}
+}
+@-o-keyframes AnimationName {
+  0%{background-position:0% 73%}
+  50%{background-position:100% 28%}
+  100%{background-position:0% 73%}
+}
+@keyframes AnimationName {
+  0%{background-position:0% 73%}
+  50%{background-position:100% 28%}
+  100%{background-position:0% 73%}
 }

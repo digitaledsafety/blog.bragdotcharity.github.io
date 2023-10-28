@@ -38,15 +38,15 @@
     );
   
     /* Sidebar */
-    --site-title-color: rgb(113, 113, 113);
-    --site-subtitle-color: #717171;
+    --site-title-color: rgb(255, 255, 255);
+    --site-subtitle-color: #ffffff;
     --sidebar-bg: rgba(215, 221, 226, 0.64);
-    --sidebar-border-color: #e6e6e6;
-    --sidebar-muted-color: #545454;
-    --sidebar-active-color: #1d1d1d;
+    --sidebar-border-color: #ece5e5;
+    --sidebar-muted-color: #ffffff;
+    --sidebar-active-color: #ffffff;
     --sidebar-hover-bg: rgba(206, 213, 218, 0.64);
     --sidebar-btn-bg: white;
-    --sidebar-btn-color: #8e8e8e;
+    --sidebar-btn-color: #ffffff;
     --avatar-border-color: white;
   
     /* Topbar */
@@ -65,7 +65,7 @@
     --toc-highlight: #0550ae;
     --btn-share-hover-color: var(--link-color);
     --card-bg: white;
-    --card-hovor-bg: rgb(149, 158, 165);
+    --card-hovor-bg: rgb(190, 204, 214);
     --card-shadow: rgba(104, 104, 104, 0.05) 0 2px 6px 0,
       rgba(211, 209, 209, 0.15) 0 0 0 1px;
     --footnote-target-bg: lightcyan;
@@ -79,7 +79,7 @@
     --prompt-tip-bg: rgb(123, 247, 144, 0.2);
     --prompt-tip-icon-color: #03b303;
     --prompt-info-bg: #e1f5fe;
-    --prompt-info-icon-color: #0070cb;
+    --prompt-info-icon-color: #eb6fff;
     --prompt-warning-bg: rgb(255, 243, 205);
     --prompt-warning-icon-color: #ef9c03;
     --prompt-danger-bg: rgb(248, 215, 218, 0.56);
@@ -88,7 +88,7 @@
     /* Tags */
     --tag-border: #dee2e6;
     --tag-shadow: var(--btn-border-color);
-    --tag-hover: rgb(222, 226, 230);
+    --tag-hover: #eb6fff;
     --search-tag-bg: #f8f9fa;
   
     [class^='prompt-'] {
