@@ -204,8 +204,11 @@ jekyll-archives:
 # For google spreadsheet comments
 comment-post: https://docs.google.com/forms/d/e/1FAIpQLSdSgNIaBCRCZQgKoyuQ0rLxA8VJyHl8i265jzA--jwGrsYc6Q
 comment-read: https://docs.google.com/spreadsheets/d/1w5y95AH-4G8Z6Ru6DHYYBDY6-6RCMrg8rTh17U6_Oek
-
 comment-post-fields: [ entry.98120567, entry.1707311907, entry.664237966]
+
+
+google_forms_comments:
+  comment_replies_enabled: true
 
 feed:
   tags: true

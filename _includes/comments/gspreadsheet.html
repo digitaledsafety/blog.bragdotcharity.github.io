@@ -1,41 +1,4 @@
 {%- comment -%} 
-	This section is to determine whether or not chunked comment loading is enabled.
-	By default this is turned ON. If the page has enabled or disabled this feature explicitly,
-	the individual page value is used. Otherwise the site's value, if any, is used.
-{%- endcomment -%}
-{%- assign chunked_loading_enabled = true -%}
-{%- if page.chunked_comment_loading == false -%}
-	{%- assign chunked_loading_enabled = false -%}
-{%- else -%}
-	{%- if site.google_forms_comments.chunked_comment_loading == false and page.chunked_comment_loading != true -%}
-		{%- assign chunked_loading_enabled = false -%}
-	{%- endif -%}
-{%- endif -%}
-
-{%- comment -%} 
-	This section is to determine whether or not lazy loading of the comments is enabled.
-	By default this is turned OFF. If the page has enabled or disabled this feature explicitly,
-	the individual page value is used. Otherwise the site's value, if any, is used.
-{%- endcomment -%}
-{%- assign lazy_load_enabled = false -%}
-{%- if page.lazy_load_comments == true -%}
-	{%- assign lazy_load_enabled = true -%}
-{%- elsif site.google_forms_comments.lazy_load_comments == true -%}
-	{%- unless page.lazy_load_comments == false -%}
-		{%- assign lazy_load_enabled = true -%}
-	{%- endunless -%}
-{%- endif -%}
-
-{%- comment -%} 
-	This section is to determine whether or recaptcha is enabled.
-{%- endcomment -%}
-{%- assign recaptcha_enabled = false -%}
-{%- if site.google_forms_comments.recaptcha_site_key -%}
-	{%- assign recaptcha_enabled = true -%}
-{%- endif -%}
-
-
-{%- comment -%} 
 	This section is to determine whether or comment replies are enabled.
 {%- endcomment -%}
 {%- assign comment_replies_enabled = false -%}
@@ -674,24 +637,17 @@
 	file needs to be added to a project trying to implement this feature. -->
 {%- endcomment -%}
 <style>
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
 .comment-item {
 	position: relative;
-	padding: 0.5em 0em;
+	padding: 0.5em 2.5em;
 	background: white;
+	font-family: "Source Sans Pro", sans-serif;
 	width: 95%;
 	margin: 1em auto;
 	box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.1);
 	border-radius: 8px;
 }
-
-.comment-item p {
-	padding: 0em 2.5em;
-}
-
-.comment-item div {
-	padding: 0em 2.5em;
-}
-
 
 .comment-item:after {
 	content: "";
@@ -779,6 +735,7 @@
 	margin-left: 1em;
 	margin-right: 1em;
 	width: 95%;
+	font-family: "Source Sans Pro", sans-serif;
 }
 
 .comments-form ul {
@@ -799,8 +756,10 @@
 
 .comment-button {
 	border: 0;
-	background: #267CB9;
+	border-radius: 8px;
+	background: #53b4e1;
 	color: #fff;
+	font-family: "Source Sans Pro", sans-serif;
 	font-weight: bold;
 	font-size: 0.9em;
 	text-transform: uppercase;
@@ -866,35 +825,47 @@
 
 #comment-name,
 #comment-comment {
-	width: 95%;
+	width: 50%;
 	padding: 10px;
 	border: 0;
 	border-radius: 8px;
 	background: #f7f7f7;
+	font-family: "Source Sans Pro", sans-serif;
 }
 
 #comment-name::-webkit-input-placeholder,
 #comment-comment::-webkit-input-placeholder {
+	font-family: "Source Sans Pro", sans-serif;
 }
 
 #comment-name::-moz-placeholder,
-#comment-comment::-moz-placeholder {}
+#comment-comment::-moz-placeholder {
+	font-family: "Source Sans Pro", sans-serif;
+}
 
 #comment-name:-ms-input-placeholder,
-#comment-comment:-ms-input-placeholder {}
+#comment-comment:-ms-input-placeholder {
+	font-family: "Source Sans Pro", sans-serif;
+}
 
 #comment-name::-ms-input-placeholder,
-#comment-comment::-ms-input-placeholder {}
+#comment-comment::-ms-input-placeholder {
+	font-family: "Source Sans Pro", sans-serif;
+}
 
 #comment-name::placeholder,
-#comment-comment::placeholder {}
+#comment-comment::placeholder {
+	font-family: "Source Sans Pro", sans-serif;
+}
 
 #comment-name:focus,
 #comment-comment:focus {
 	background: #fff;
+	font-family: "Source Sans Pro", sans-serif;
 }
 
 #comment-comment {
+	width: 100%;
 	height: 80px;
 	resize: vertical;
 	min-height: 80px;
@@ -915,6 +886,7 @@ https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-b
 	text-align: justify;
     text-align-last: center;
     font-size: .7em;
+	font-family: "Source Sans Pro", sans-serif;
 }
 {%- endif -%}
 
