@@ -101,5 +101,11 @@
   100%{background-position:0% 73%}
 }
 
+// This style is a hack for linkpreview urls on posts
+#main-wrapper > div > div.row.flex-grow-1 > main > article > div.content div.col-md-5 > div > a.popup.img-link {
+  margin:0; 
+}
 
-
+#main-wrapper > div > div.row.flex-grow-1 > main > article > div.content div.col-md-5 > div > a.post-preview.row.g-0.flex-md-row-reverse:hover {
+  border: none;
+}
