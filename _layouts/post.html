@@ -82,10 +82,6 @@ tail_includes:
     {{ content }}
   </div>
 
-  {% if page.repost_link %}
-  {% linkpreview {{ page.repost_link }} %}
-  {% endif %}
-
   <div class="post-tail-wrapper text-muted">
     <!-- categories -->
     {% if page.categories.size > 0 %}
