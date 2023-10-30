@@ -82,10 +82,8 @@ refactor: true
               <div class="me-auto">
 
                 <!-- categories -->
-                {% if post.categories.size > 0 %}
-                  {% if post.categories contains 'reposts' %}
+                {% if post.repost_link %}
                 <i class="fa fa-retweet fa-fw me-1"></i>
-                  {% endif %}
                 {% endif %}
 
 
