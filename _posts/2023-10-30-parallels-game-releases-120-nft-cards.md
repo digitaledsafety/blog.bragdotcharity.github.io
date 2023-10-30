@@ -5,5 +5,5 @@ repostlink: https://decrypt.co/203199/parallel-game-adds-over-120-new-nft-cards-
 slug: "123124"
 ---
 
-{% include linkpreview-repost.html %}
+{% include embed/linkpreview-repost.html %}
 

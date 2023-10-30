@@ -6,4 +6,4 @@ permalink: /posts/beanz-nft-creator-releases-vinyl-toy/
 #slug: "123124"
 ---
 
-{% include linkpreview-repost.html %}
+{% include embed/linkpreview-repost.html %}
