@@ -1,5 +1,6 @@
 ---
 image: /assets/img/posts/vadim-artyukhin-_92BitC3QEU-unsplash.jpg
+categories: reposts
 ---
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Create <a href="https://twitter.com/hashtag/Binance?src=hash&amp;ref_src=twsrc%5Etfw">#Binance</a> themed Halloween decorations to win your share of $1,000 in <a href="https://twitter.com/hashtag/BNB?src=hash&amp;ref_src=twsrc%5Etfw">#BNB</a>!<br><br>To enter:<br>🔸 Retweet <br>🔸 Follow <a href="https://twitter.com/binance?ref_src=twsrc%5Etfw">@Binance</a> <br>🔸 Share a photo or video of Binance themed Halloween decorations using <a href="https://twitter.com/hashtag/BinanceTreats?src=hash&amp;ref_src=twsrc%5Etfw">#BinanceTreats</a> <br><br>10 of you will each win $100! <a href="https://t.co/GkIUfxnUky">pic.twitter.com/GkIUfxnUky</a></p>&mdash; Binance (@binance) <a href="https://twitter.com/binance/status/1714991669609636097?ref_src=twsrc%5Etfw">October 19, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
