@@ -18,7 +18,11 @@ tail_includes:
     <div class="post-meta text-muted">
       <!-- published date -->
       <span>
+        {% if page.repostlink %}
+        Reposted
+        {% else %}
         {{ site.data.locales[lang].post.posted }}
+        {% endif %}
         {% include datetime.html date=page.date tooltip=true lang=lang %}
       </span>
 
