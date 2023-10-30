@@ -1,71 +1,35 @@
 
-<article class="card-wrapper card">
+<article class="card-wrapper card flex-md-row-reverse mt-3 mb-3">
     <a href="{{ url }}" class="post-preview row g-0 flex-md-row-reverse">
-      {% assign card_body_col = '12' %}
-
-      {% if image %}
-        {% assign src = image %}
-
         <div class="col-md-5">
-          <img src="{{ src }}">
-        </div>
-
-        {% assign card_body_col = '7' %}
-      {% endif %}
-
-      <div class="col-md-{{ card_body_col }}">
-        <div class="card-body d-flex flex-column">
-          <h1 class="card-title my-2 mt-md-0">{{ title }}</h1>
-
-          <div class="card-text content mt-0 mb-3">
-            <p>
-              {{ description | strip_html | truncate: 200 | escape }}
-            </p>
-          </div>
-
-          <div class="post-meta flex-grow-1 d-flex align-items-end">
-            <div class="me-auto">
-              <!-- posted date -->
-              <i class="fa fa-link fa-fw me-1"></i>
-              {{ domain }}
-              <i class="fa fa-file fa-fw me-1"></i>
-              {{ type }}              
-              
-              <!-- categories -->
-              {% if post.tags.size > 0 %}
-                <i class="fa fa-tag fa-fw me-1"></i>
-                <span class="categories">
-                  {% for tag in post.tags %}
-                    {{ tag }}
-                    {%- unless forloop.last -%},{%- endunless -%}
-                  {% endfor %}
-                </span>
-              {% endif %}
-
-              <!-- categories -->
-              {% if post.categories.size > 0 %}
-                <i class="far fa-folder-open fa-fw me-1"></i>
-                <span class="categories">
-                  {% for category in post.categories %}
-                    {{ category }}
-                    {%- unless forloop.last -%},{%- endunless -%}
-                  {% endfor %}
-                </span>
-              {% endif %}
+            <div class="preview-img">
+                <img  src="{{ image }}"  loading="lazy">
             </div>
-
-            {% if post.pin %}
-              <div class="pin ms-1">
-                <i class="fas fa-thumbtack fa-fw"></i>
-                <span>{{ site.data.locales[lang].post.pin_prompt }}</span>
-              </div>
-            {% endif %}
-          </div>
-          <!-- .post-meta -->
         </div>
-        <!-- .card-body -->
-      </div>
+        <div class="col-md-7">
+            <div class="card-body d-flex flex-column">
+                <h4 class="card-title my-2 mt-md-0">{{ title }}</h4>
+                <div class="card-text content mt-0 mb-3">
+                    <p>{{ description | strip_html | truncate: 100 | escape  }}</p>
+                </div>
+                <div class="post-meta flex-grow-1 d-flex align-items-end">
+                    <div class="me-auto">
+                      <!-- posted date -->
+                      <i class="fa fa-server fa-fw me-1"></i>     
+                      <a href="//{{ domain }}" target="_blank">{{ domain }}</a>          
+                      <!-- categories -->                  
+                        <i class="fa fa-file fa-fw me-1"></i>
+                        <span class="categories">
+                            {{ type }}
+                        </span>   
+                      <!-- categories -->                   
+                    </div>                    
+                  </div>
+            </div>
+        </div>
     </a>
-  </article>
+</article>
+
+
 
 

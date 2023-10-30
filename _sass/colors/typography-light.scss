@@ -109,11 +109,32 @@
     --timeline-node-bg: #c2c6cc;
     --timeline-year-dot-color: #ffffff;
 
+    .btn-outline-primary {
+      --bs-btn-color: #53b4e1;
+      --bs-btn-border-color: #53b4e1;
+      --bs-btn-hover-color: #fff;
+      --bs-btn-hover-bg: #53b4e1;
+      --bs-btn-hover-border-color: #53b4e1;
+      --bs-btn-focus-shadow-rgb: 13,110,253;
+      --bs-btn-active-color: #fff;
+      --bs-btn-active-bg: #53b4e1;
+      --bs-btn-active-border-color: #53b4e1;
+      --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+      --bs-btn-disabled-color: #53b4e1;
+      --bs-btn-disabled-bg: transparent;
+      --bs-btn-disabled-border-color: #53b4e1;
+      --bs-gradient: none;
+    }
+
+    .btn:hover {
+      background-color: #53b4e1;
+    }
+
     #search-results a, #access-lastmod a {
       color: #3f3f3f;
     }
 
-    .post-tags .post-tag:hover, main #tags a:hover {
+    #page-category ul>li>a, #page-tag ul>li>a, .post-tags .post-tag:hover, main #tags a:hover {
       color: #fff !important;
     }
 

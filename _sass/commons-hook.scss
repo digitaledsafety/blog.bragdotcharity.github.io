@@ -101,22 +101,11 @@
   100%{background-position:0% 73%}
 }
 
-
-#main-wrapper > div > div.row.flex-grow-1 > main > article > div.content > article {
-  flex-direction: row-reverse;
+// This style is a hack for linkpreview urls on posts
+#main-wrapper > div > div.row.flex-grow-1 > main > article > div.content div.col-md-5 > div > a.popup.img-link {
+  margin:0; 
 }
 
-#main-wrapper > div > div.row.flex-grow-1 > main > article > div.content > article > div.col-md-7 > div > h1 {
-  font-size: 1.1rem;
+#main-wrapper > div > div.row.flex-grow-1 > main > article > div.content div.col-md-5 > div > a.post-preview.row.g-0.flex-md-row-reverse:hover {
+  border: none;
 }
-
-#main-wrapper > div > div.row.flex-grow-1 > main > article > div.content > article > div.col-md-7 > div > div.card-text.content.mt-0.mb-3 {
-  font-size: 0.9rem;
-  line-height: 1rem;
-}
-
-.content a.popup {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
