@@ -3,4 +3,4 @@ repostlink: https://www.digitaltrends.com/computing/apple-dynamic-caching-explai
 tags: features
 ---
 
-{% include embed/linkpreview-repost.md %}
+{% include embed/linkpreview-repost.html %}
