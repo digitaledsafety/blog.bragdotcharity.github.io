@@ -1,7 +1,8 @@
 ---
 tags: features
-title: Chrome Upgrades Web Requests to HTTPS by Default
+title: Repost: Chrome Upgrades Web Requests to HTTPS by Default
 image: https://play-lh.googleusercontent.com/KwUBNPbMTk9jDXYS2AeX3illtVRTkrKVh5xR1Mg4WHd0CG2tV4mrh1z3kXi5z_warlk=w600-h300-pc0xffffff-pd
+permalink: /posts/2023-10-31-chrome-https-default
 ---
 
 A long time coming!
