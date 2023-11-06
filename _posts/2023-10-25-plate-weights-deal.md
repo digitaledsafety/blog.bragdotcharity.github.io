@@ -1,5 +1,5 @@
 ---
-tags: [deals, fitness]
+tags: [products, fitness]
 image: /assets/img/posts/sam-sabourin-PiFA6HIAfBA-unsplash.jpg
 ---
 
