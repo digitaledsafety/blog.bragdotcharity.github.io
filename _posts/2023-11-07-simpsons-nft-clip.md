@@ -1,5 +1,5 @@
 ---
-title: Simpson's NFT Bart Clip
+title: The Simpson's NFT Bart Clip
 tags: nft
 image: "https://cdn.cms-twdigitalassets.com/content/dam/help-twitter/x/x_sharing_card.png.twimg.768.png"
 ---
