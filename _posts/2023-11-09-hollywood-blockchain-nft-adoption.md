@@ -1,5 +1,5 @@
 ---
-tags: nft
+tags: NFT
 repostlink: https://www.rollingstone.com/culture-council/articles/blockchain-future-of-entertainment-1298876/
 image: https://www.rollingstone.com/wp-content/uploads/2022/02/Is-Blockchain-the-Future-of-Entertainment.jpg
 title: Hollywood NFT and Blockchain Adoption

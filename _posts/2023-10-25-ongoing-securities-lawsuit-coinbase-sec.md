@@ -1,5 +1,5 @@
 ---
-tags: nft
+tags: NFT
 image: /assets/img/posts/katie-moum-o0kbc907i20-unsplash.jpg
 title: Ongoing Lawsuit Between Coinbase and SEC
 ---

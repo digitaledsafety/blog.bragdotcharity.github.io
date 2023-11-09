@@ -1,6 +1,6 @@
 ---
 layout: post
-tags: nft
+tags: NFT
 date: Oct 22, 2023
 title: Roblox Now Allowing XRP Cryptocurrency Payments
 ---

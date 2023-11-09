@@ -1,7 +1,7 @@
 ---
 layout: post
 date: Oct 7 2023
-tags: [nft, stem, steam]
+tags: [NFT]
 title: First European Film Funded by NFTs
 ---
 

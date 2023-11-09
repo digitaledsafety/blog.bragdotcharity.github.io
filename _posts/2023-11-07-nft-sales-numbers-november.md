@@ -1,6 +1,6 @@
 ---
 title: NFT Sales Numbers For November
-tags: nft
+tags: NFT
 repostlink: https://cointelegraph.com/news/nft-sales-volume-november-blur-opensea
 ---
 

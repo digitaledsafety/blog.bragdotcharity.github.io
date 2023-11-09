@@ -1,5 +1,6 @@
 ---
-tags: nft
+tags:
+  - NFT
 title: Proof XYZ Podcast
 image: /assets/img/posts/new100proof.jpeg
 ---

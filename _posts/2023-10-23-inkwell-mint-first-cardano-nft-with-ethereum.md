@@ -1,6 +1,6 @@
 ---
 image: /assets/img/posts/F9IMs-6WcAEmL2p.jpeg
-tags: [nft, stem, steam]
+tags: [NFT]
 title: Inkwell Minting First Cardano NFT With Cardano or Ethereum
 ---
 

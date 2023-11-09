@@ -1,5 +1,5 @@
 ---
-tags: nft
+tags: NFT
 title: Sega Talks Blockchain, NFTs, and Gaming
 ---
 

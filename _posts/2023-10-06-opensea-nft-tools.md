@@ -1,6 +1,6 @@
 ---
 image: /assets/img/posts/behnam-norouzi-GashUD7J8sg-unsplash.jpg
-tags: [nft, stem]
+tags: [NFT]
 title: Opensea Studio NFT Tools
 ---
 

@@ -1,5 +1,5 @@
 ---
-tags: nft
+tags: NFT
 image: /assets/img/posts/mariia-shalabaieva-ODvmIA3gy6g-unsplash.jpg
 ---
 

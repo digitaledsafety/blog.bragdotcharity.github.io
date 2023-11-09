@@ -1,5 +1,4 @@
 ---
-tags: [stem]
 image: https://www.minecraft.net/content/dam/games/minecraft/realms/Realms-Settings_Header_1170x500.jpg.transform/minecraft-image-large/image.jpg
 comments: false
 ---

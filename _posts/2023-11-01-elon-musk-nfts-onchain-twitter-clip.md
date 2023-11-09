@@ -1,5 +1,5 @@
 ---
-tags: nft
+tags: NFT
 title: Elon Musk NFTs Onchain Twitter Clip
 ---
 

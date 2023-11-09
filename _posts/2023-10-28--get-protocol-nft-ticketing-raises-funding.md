@@ -1,5 +1,5 @@
 ---
-tags: nft
+tags: NFT
 image: https://img.decrypt.co/insecure/rs:fit:1536:0:0:0/plain/https://cdn.decrypt.co/wp-content/uploads/2023/07/nft-ticket-web3-gID_7.jpg
 title: Get Protocol Raises Funding for NFT Ticketing
 ---

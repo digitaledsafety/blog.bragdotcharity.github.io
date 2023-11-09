@@ -1,7 +1,7 @@
 ---
 layout: post
 date: Oct 8 2023
-tags: [nft, stem]
+tags: [NFT]
 title: RTFKT Nike Dunk Genesis
 ---
 

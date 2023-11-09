@@ -1,6 +1,6 @@
 ---
 image: /assets/img/posts/F7_5ZYmWQAAgQb3.jpeg
-tags: nft
+tags: NFT
 title: Yuga Labs and Beeple Unveil Cryptopunk NFT Physical Prints
 ---
 

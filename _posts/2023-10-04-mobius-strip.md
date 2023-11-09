@@ -1,8 +1,3 @@
----
-layout: post
-date: Oct 3, 2023
----
-
 The Möbius Mystery Has Stumped Mathematicians for 46 Years. Finally, It's Solved.
 
 <div id="fb-root"></div>
