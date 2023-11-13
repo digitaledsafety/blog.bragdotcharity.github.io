@@ -1,6 +1,7 @@
 ---
 title: Doom Clone on Bitcoin Ordinals
 image: https://blockworks-co.imgix.net/wp-content/uploads/2023/02/bitcoindoom3.gif
+tags: [NFT, games]
 ---
 
 Play a Doom clone on Bitcoin (Ordinals)!
