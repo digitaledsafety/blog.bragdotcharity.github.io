@@ -1,0 +1,31 @@
+<html>
+<head>
+</head>
+<body>
+<script>
+
+const urlParams = new URLSearchParams(location.search);
+const statusValue = urlParams.get('status');
+
+var canvas = document.createElement('canvas');
+canvas.width = "500";
+canvas.height = "500";
+canvas.hidden = true;
+var context = canvas.getContext("2d");
+
+context.fillStyle = "red";
+context.fillRect(0,0,canvas.width, canvas.height);
+context.fillStyle = "blue";
+context.font = "bold 4em Arial";
+context.textAlign = 'center';
+context.textBaseline = 'middle';
+context.fillText(statusValue, (canvas.width / 2), (canvas.height / 2));
+
+
+const img    = canvas.toDataURL('image/jpeg');
+
+document.write('<img src="'+img+'"/>');
+</script>
+</body>
+
+</html>
