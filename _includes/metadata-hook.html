@@ -1,7 +1,7 @@
 {% if page.image %}
 {% else %}
-<meta name="twitter:image" content="/assets/img/logo.jpg">
-<meta property="og:image" content="/assets/img/logo.jpg" />
+<meta name="twitter:image" content="{{site.url}}/assets/img/logo.jpg">
+<meta property="og:image" content="{{site.url}}/assets/img/logo.jpg" />
 {% endif %}
 
 {%- assign month = "now" | date: "%m" -%} 
