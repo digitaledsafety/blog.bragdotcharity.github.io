@@ -3,7 +3,7 @@ repostlink: https://decrypt.co/203969/tangem-ring-hardware-wallet-will-debut-at-
 tags:
 - NFT
 - IOT
-title: "Repost: Cardano Releasing Crypto Wallet Ring"
+title: "Repost: Cardano Crypto Wallet Ring"
 ---
 
 {% include embed/linkpreview-repost.html %}
