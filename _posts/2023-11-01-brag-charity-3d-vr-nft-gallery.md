@@ -2,7 +2,6 @@
 tags: [NFT]
 title: brag.charity 3D VR NFT Gallery 
 image: https://brag.charity/assets/images/logo-brag2.png
-pin: true
 ---
 
 Check out our new NFT gallery! 👾
