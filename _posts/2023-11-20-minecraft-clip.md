@@ -1,5 +1,6 @@
 ---
 image: https://digitaleducationsafety.org/assets/img/sc8d30.jpg
+pin: true
 ---
 
 Here's a clip of my kids trolling in Minecraft! 
