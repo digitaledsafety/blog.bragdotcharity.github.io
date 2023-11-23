@@ -76,6 +76,8 @@
 			let kohen = undefined;
 			let currentAnimationUrl = undefined;
 			let currentMixer = undefined;
+			let mixerEislee = undefined;
+			let mixerKohen = undefined;
 
 
 			// cannon.js variables
@@ -145,6 +147,17 @@
 					vrm.scene.position.set( -1, 0, 0 );
 					scene.add( vrm.scene );
 
+					// create AnimationMixer for VRM
+					mixerEislee = new THREE.AnimationMixer( eislee.scene );
+
+					// Load animation
+					loadMixamoAnimation( '/assets/idle.fbx', eislee ).then( ( clip ) => {
+
+						// Apply the loaded animation to mixer and play
+						mixerEislee.clipAction( clip ).play();
+						mixerEislee.timeScale = 1;
+
+					} );
 
 
 				},
@@ -187,6 +200,18 @@
 
 					vrm.scene.position.set( 1, 0, 0 );
 					scene.add( vrm.scene );
+
+					// create AnimationMixer for VRM
+					mixerKohen = new THREE.AnimationMixer( kohen.scene );
+
+					// Load animation
+					loadMixamoAnimation( '/assets/idle2.fbx', kohen ).then( ( clip ) => {
+
+						// Apply the loaded animation to mixer and play
+						mixerKohen.clipAction( clip ).play();
+						mixerKohen.timeScale = 1;
+
+					} );
 
 				},
                 
@@ -238,11 +263,19 @@
 
 				// if animation is loaded
 				if ( currentMixer ) {
-
 					// update the animation
 					currentMixer.update( deltaTime );
+				}		
 
-				}				
+				if ( mixerEislee ) {
+					// update the animation
+					mixerEislee.update( deltaTime );
+				}
+
+				if ( mixerKohen ) {
+					// update the animation
+					mixerKohen.update( deltaTime );
+				}
 
 				requestAnimationFrame( animate );
 				// update vrm components
@@ -258,6 +291,7 @@
 			}
 
 			animate();
+
 
 
 			// dnd handler
