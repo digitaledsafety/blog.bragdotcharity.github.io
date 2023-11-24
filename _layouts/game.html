@@ -104,6 +104,10 @@
 					this.loader = undefined;			
 				}
 
+				state(toState) {
+					
+				}
+
 				animate(deltaTime) {
 					// if animation is loaded
 					if ( this.mixer ) {
@@ -111,11 +115,12 @@
 							this.mixer.update( deltaTime );
 						}	
 						
-						// update vrm components
-						if ( this.vrm ) {
-							this.vrm.update( clock.getDelta() );
-						}						
-					}
+					// update vrm components
+					if ( this.vrm ) {
+						this.vrm.update( clock.getDelta() );
+					}						
+				}
+					
 
 				init() {
 					this.loader = new GLTFLoader();
@@ -123,8 +128,6 @@
 					this.loader.register( ( parser ) => {
 						return new VRMLoaderPlugin( parser );
 					} );	
-
-					this.stateMachine = 
 
 					this.loader.load(
 
@@ -152,17 +155,13 @@
 
 							// create AnimationMixer for VRM
 							this.mixer = new THREE.AnimationMixer( this.vrm.scene );
+							this.mixer.timeScale = 2;
 
 							// Load animation
 							loadMixamoAnimation( this.settings.state.states.start.animation, this.vrm ).then( ( clip ) => {
-
 								// Apply the loaded animation to mixer and play
 								this.mixer.clipAction( clip ).play();
-								this.mixer.timeScale = 1;
-
 							} );
-
-
 						},
 
 						// called while loading is progressing
@@ -235,8 +234,10 @@
 			e.init();
 
 			var characters = [];
-			characters.push(k);
 			characters.push(e);
+			characters.push(k);
+			
+			current = characters[0];
 
 			world = new CANNON.World()
 			world.gravity.set(0, -40, 0)
@@ -300,7 +301,6 @@
 
 					// Apply the loaded animation to mixer and play
 					currentMixer.clipAction( clip ).play();
-					currentMixer.timeScale = 1;
 
 				} );
 			}
@@ -359,44 +359,81 @@
 			} );
 
 			
+			document.addEventListener('keyup', function(event) {
+	
+			});
+
 			document.addEventListener('keydown', function(event) {
 
 				const oldObjectPosition = new THREE.Vector3();
-				current.scene.getWorldPosition(oldObjectPosition);
+				current.vrm.scene.getWorldPosition(oldObjectPosition);
 
 				// NOTE Move object
 				if(event.keyCode == 87) { // w
-					current.scene.position.z +=0.1;
+					current.vrm.scene.position.z +=0.1;
 
 					// create AnimationMixer for VRM
-					currentMixer = new THREE.AnimationMixer( current.scene );
+					current.mixer = new THREE.AnimationMixer( current.vrm.scene );
 
 					// Load animation
-					loadMixamoAnimation( '/assets/run_forward.fbx', current ).then( ( clip ) => {
+					loadMixamoAnimation( '/assets/run_forward.fbx', current.vrm ).then( ( clip ) => {
 
 						// Apply the loaded animation to mixer and play
-						currentMixer.clipAction( clip ).play();
-						currentMixer.timeScale = 1;
+						current.mixer.clipAction( clip ).play();
 
 					} );
+				}
 
+				if(event.keyCode == 69) { // e
+					// create AnimationMixer for VRM
+					current.mixer = new THREE.AnimationMixer( current.vrm.scene );
+
+					// Load animation
+					loadMixamoAnimation( '/assets/cast2.fbx', current.vrm ).then( ( clip ) => {
+
+						// Apply the loaded animation to mixer and play
+						current.mixer.clipAction( clip ).play();
+
+					} );
+				}
+
+				if(event.keyCode == 32) { // space bar
+					// create AnimationMixer for VRM
+					current.mixer = new THREE.AnimationMixer( current.vrm.scene );
+
+					// Load animation
+					loadMixamoAnimation( '/assets/cast.fbx', current.vrm ).then( ( clip ) => {
+
+						// Apply the loaded animation to mixer and play
+						current.mixer.clipAction( clip ).play();
+						current.mixer.timeScale = 1;
+
+					} );
+				}
+
+				if(event.keyCode == 49) { // 1
+					current = e;
+				}
+
+				if(event.keyCode == 50) { // 2
+					current = k;
 				}
 
 				if(event.keyCode == 65) { // a
-					current.scene.position.x +=0.1;
+					current.vrm.scene.position.x +=0.1;
 				}
 
 				if(event.keyCode == 83) { // s
-					current.scene.position.z -=0.1;
+					current.vrm.scene.position.z -=0.1;
 				}
 
 				if(event.keyCode == 68) { // d
-					current.scene.position.x -=0.1;
+					current.vrm.scene.position.x -=0.1;
 				}				
 
 
 				const newObjectPosition = new THREE.Vector3();
-				current.scene.getWorldPosition(newObjectPosition);
+				current.vrm.scene.getWorldPosition(newObjectPosition);
 
 				const delta = newObjectPosition.clone().sub(oldObjectPosition);
 
