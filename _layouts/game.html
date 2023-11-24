@@ -55,15 +55,15 @@
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			renderer.setPixelRatio( window.devicePixelRatio );
 			renderer.toneMapping = THREE.ACESFilmicToneMapping;
-			renderer.toneMappingExposure = 0.4;
+			renderer.toneMappingExposure = 0.45;
 			renderer.outputEncoding = THREE.sRGBEncoding;
 			document.body.appendChild( renderer.domElement );
 
 			// camera
 			const CAMERA_FOV = 30.0;
-			const CAMERA_Z = 7.0;
+			const CAMERA_Z = 5.0;
 			const camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth / window.innerHeight, 0.1, 20.0 );
-			camera.position.set( 0.0, 3, CAMERA_Z );			
+			camera.position.set( 0.0, 1.5, CAMERA_Z );			
 
 			// camera controls
 			const controls = new OrbitControls( camera, renderer.domElement );
@@ -321,7 +321,7 @@
 
 			var data = {
 				model: './assets/Kohen.vrm',
-				origin: [1, 0, 0],
+				origin: [0.5, 0, 0],
 				idleAnimation: './assets/idle.fbx'
 			}
 
@@ -333,7 +333,7 @@
 
 			var data = {
 				model: './assets/Eislee.vrm',
-				origin: [-1, 0, 0],
+				origin: [-0.5, 0, 0],
 				idleAnimation: './assets/idle_wide.fbx'
 			}
 
@@ -429,11 +429,11 @@
 			}
 
 			// helpers
-			const gridHelper = new THREE.GridHelper( 10, 10 );
-			scene.add( gridHelper );
+			//const gridHelper = new THREE.GridHelper( 10, 10 );
+			//scene.add( gridHelper );
 
-			const axesHelper = new THREE.AxesHelper( 5 );
-			scene.add( axesHelper );
+			//const axesHelper = new THREE.AxesHelper( 5 );
+			//scene.add( axesHelper );
 
 			function animate() {
 
