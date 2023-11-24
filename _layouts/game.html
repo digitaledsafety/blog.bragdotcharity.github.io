@@ -61,9 +61,9 @@
 
 			// camera
 			const CAMERA_FOV = 30.0;
-			const CAMERA_Z = 5.0;
+			const CAMERA_Z = 3.5;
 			const camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth / window.innerHeight, 0.1, 20.0 );
-			camera.position.set( 0.0, 1.5, CAMERA_Z );			
+			camera.position.set( -7, 3, CAMERA_Z );			
 
 			// camera controls
 			const controls = new OrbitControls( camera, renderer.domElement );
@@ -234,7 +234,7 @@
 					}	
 						
 					// update vrm components
-					if ( this.vrm ) {
+					if ( this.vrm && 'update' in this.vrm ) {
 						this.vrm.update( clock.getDelta() );
 					}						
 				}
@@ -263,20 +263,28 @@
 						// called when the resource is loaded
 						( gltf ) => {
 
-							this.vrm = gltf.userData.vrm;
+							if(gltf.userData.vrm) {
+								this.vrm = gltf.userData.vrm;
+								// Disable frustum culling
+								this.vrm.scene.traverse( ( obj ) => {
+									obj.frustumCulled = false;
+								} );
+
+							} else {
+								this.vrm = gltf;
+							}
+							
 
 							// calling these functions greatly improves the performance
 							VRMUtils.removeUnnecessaryVertices( gltf.scene );
 							VRMUtils.removeUnnecessaryJoints( gltf.scene );
 
-							// Disable frustum culling
-							this.vrm.scene.traverse( ( obj ) => {
-								obj.frustumCulled = false;
-							} );
 
 							//current = this.vrm;
 							console.log( this.vrm );
 							this.vrm.scene.position.set( this.settings.origin[0], this.settings.origin[1], this.settings.origin[2]);
+							this.vrm.scene.rotation.y = this.settings.rotation[1];
+							console.log('this.vrm.scene.rotation.z' + this.vrm.scene.rotation.z);
 							scene.add( this.vrm.scene );
 
 							// create AnimationMixer for VRM
@@ -301,6 +309,7 @@
 			var settings = {
 				'model': function () { return 'model' },
 				'origin': function () { return 'origin' },
+				'rotation': function () {return 'rotation'},
 				'idleAnimation': function () { return 'idleAnimation' }
 			}
 
@@ -321,8 +330,9 @@
 
 			var data = {
 				model: './assets/Kohen.vrm',
-				origin: [0.5, 0, 0],
-				idleAnimation: './assets/idle.fbx'
+				origin: [0.5, 0, -2],
+				rotation: [0, 0, 0],
+				idleAnimation: './assets/idle_attack.fbx'
 			}
 
 			var k = new Character(template(data));
@@ -333,8 +343,9 @@
 
 			var data = {
 				model: './assets/Eislee.vrm',
-				origin: [-0.5, 0, 0],
-				idleAnimation: './assets/idle_wide.fbx'
+				origin: [-0.5, 0, -2],
+				rotation: [0, 0, 0],
+				idleAnimation: './assets/idle_attack_look.fbx'
 			}
 
 			var e = new Character(template(data));
@@ -343,9 +354,25 @@
 			statee = e.machine.transition(statee, 'switch')
 			console.log(`current state: ${statee}`)
 
+
+			var data = {
+				model: './assets/Orc.gltf',
+				origin: [0, 0, 2],
+				rotation: [0, Math.PI, 0],
+				idleAnimation: ''
+			}
+
+			var a = new Character(template(data));
+			let statea= a.machine.value
+			console.log(`current state: ${statea}`)
+			statea = a.machine.transition(statea, 'switch')
+			console.log(`current state: ${statea}`)
+
+
 			var characters = [];
 			characters.push(e);
 			characters.push(k);
+			characters.push(a);
 			
 			current = characters[0];
 
@@ -457,7 +484,7 @@
   grassMaterial.uniforms.time.value = time;
 
 				// render
-				//renderer.clear();
+				renderer.clear();
 				renderer.render(backgroundScene, camera);
 				renderer.render( scene, camera );
 
