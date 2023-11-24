@@ -94,35 +94,150 @@
 			const clock = new THREE.Clock();
 			clock.start();
 
-			class Character {
-				constructor(settings) {
+
+
+
+			class Character
+			{
+				constructor(settings)
+				{
 					this.settings = settings;
 					this.mixer = undefined;
 					this.model = this.settings.model;
 					this.vrm = undefined;
 					this.stateMachine = undefined;
-					this.loader = undefined;			
+					this.loader = undefined;		
+
+					this.machine = this.createMachine(this, {
+						initialState: 'off',
+						off: {
+							actions: {
+								onEnter(obj) {
+									console.log('off: onEnter')
+								},
+								onExit(obj) {
+									console.log('off: onExit')
+								},
+							},
+							transitions: {
+								switch: {
+									target: 'init',
+									action(obj) {
+										console.log('transition action for "switch" in "off" state')
+									},
+								},
+							},
+						},
+						init: {
+							actions: {
+								onEnter(obj) {
+									console.log('init: onEnter')
+
+									obj.init();
+								},
+								onExit(obj) {
+									console.log('init: onExit')
+								},
+							},
+							transitions: {
+								switch: {
+									target: 'idle',
+									action(obj) {
+										console.log('transition action for "switch" in "init" state')
+									},
+								},
+							},
+						},
+						idle: {
+							actions: {
+								onEnter(obj) {
+									console.log('idle: onEnter')
+									obj.idle();
+								},
+								onExit(obj) {
+									console.log('idle: onExit')
+								},
+							},
+							transitions: {
+								attack: {
+									target: 'attack',
+									action(obj) {
+										console.log('transition action for "attack" in "idle" state')
+									},
+								},
+							},
+						},
+						attack: {
+							actions: {
+								onEnter(obj) {
+									console.log('attack: onEnter')
+								},
+								onExit() {
+									console.log('attack: onExit')
+								},
+							},
+							transitions: {
+								idle: {
+									target: 'idle',
+									action() {
+										console.log('transition action for "idle" in "attack" state')
+									},
+								},
+							},
+						},
+					})
 				}
 
-				state(toState) {
-					
+				createMachine(obj, stateMachineDefinition)
+				{
+					const machine = {
+						value: stateMachineDefinition.initialState,
+						transition(currentState, event) {
+							const currentStateDefinition = stateMachineDefinition[currentState]
+							const destinationTransition = currentStateDefinition.transitions[event]
+							if (!destinationTransition) {
+								return
+							}
+							const destinationState = destinationTransition.target
+							const destinationStateDefinition =
+								stateMachineDefinition[destinationState]
+
+							destinationTransition.action(obj)
+							currentStateDefinition.actions.onExit(obj)
+							destinationStateDefinition.actions.onEnter(obj)
+
+							machine.value = destinationState
+
+							return machine.value
+						},
+					}
+					return machine
 				}
 
-				animate(deltaTime) {
+				animate(deltaTime)
+				{
 					// if animation is loaded
 					if ( this.mixer ) {
-							// update the animation
-							this.mixer.update( deltaTime );
-						}	
+						// update the animation
+						this.mixer.update( deltaTime );
+					}	
 						
 					// update vrm components
 					if ( this.vrm ) {
 						this.vrm.update( clock.getDelta() );
 					}						
 				}
-					
+				
+				idle() {
+					// Load animation
+					loadMixamoAnimation( this.settings.idleAnimation, this.vrm ).then( ( clip ) => {
+						// Apply the loaded animation to mixer and play
+						this.mixer.clipAction( clip ).play();
+					} );
+				}
 
-				init() {
+				init()
+				{
 					this.loader = new GLTFLoader();
 					this.loader.crossOrigin = 'anonymous';
 					this.loader.register( ( parser ) => {
@@ -157,11 +272,8 @@
 							this.mixer = new THREE.AnimationMixer( this.vrm.scene );
 							this.mixer.timeScale = 2;
 
-							// Load animation
-							loadMixamoAnimation( this.settings.state.states.start.animation, this.vrm ).then( ( clip ) => {
-								// Apply the loaded animation to mixer and play
-								this.mixer.clipAction( clip ).play();
-							} );
+							// switch to idle state
+							this.machine.transition(this.machine.value, 'switch');
 						},
 
 						// called while loading is progressing
@@ -178,26 +290,7 @@
 			var settings = {
 				'model': function () { return 'model' },
 				'origin': function () { return 'origin' },
-				'state' : {
-					// The initial state
-					initialState: "start",
-					// The list of states
-					states: {
-						start: {
-							animation: function () { return 'startAnimation' },
-							// The list of transitions
-							transitions: [
-								{
-								// The event that triggers the transition
-								event: "click",
-								// The new state
-								newState: "end"
-								}
-							]
-						},
-						end: {}
-					}
-				}
+				'idleAnimation': function () { return 'idleAnimation' }
 			}
 
 			// templatize our settings
@@ -218,20 +311,26 @@
 			var data = {
 				model: './assets/Kohen.vrm',
 				origin: [1, 0, 0],
-				startAnimation: './assets/idle2.fbx'
+				idleAnimation: './assets/idle2.fbx'
 			}
 
 			var k = new Character(template(data));
-			k.init();
-			
+			let statek = k.machine.value
+			console.log(`current state: ${statek}`)
+			statek = k.machine.transition(statek, 'switch')
+			console.log(`current state: ${statek}`)
+
 			var data = {
 				model: './assets/Eislee.vrm',
 				origin: [-1, 0, 0],
-				startAnimation: './assets/idle.fbx'
+				idleAnimation: './assets/idle.fbx'
 			}
 
 			var e = new Character(template(data));
-			e.init();
+			let statee = e.machine.value
+			console.log(`current state: ${statee}`)
+			statee = e.machine.transition(statee, 'switch')
+			console.log(`current state: ${statee}`)
 
 			var characters = [];
 			characters.push(e);
