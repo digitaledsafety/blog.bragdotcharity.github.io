@@ -1,720 +1,738 @@
-
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<title>three-vrm example</title>
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-		/>
-		<style>
-			body {
-				margin: 0;
-			}
-			canvas {
-				display: block;
-			}
-		</style>
-	</head>
-
-	<body>
-		<div id="zone_joystick"></div>
-
-
-		<!-- Import maps polyfill -->
-		<!-- Remove this when import maps will be widely supported -->
-		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
-
-		<script type="importmap">
-			{
-				"imports": {
-					"three": "https://unpkg.com/three@0.154.0/build/three.module.js",
-					"three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/",
-					"@pixiv/three-vrm": "https://unpkg.com/@pixiv/three-vrm@2.0.6/lib/three-vrm.module.js",
-					"cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js",
-					"nipplejs": "https://cdn.jsdelivr.net/npm/nipplejs@0.10.1/dist/nipplejs.js"
-
-				}
-			}
-		</script>
-
-		<script type="module">
-			import * as THREE from 'three';
-			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-			import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
-			import * as CANNON from "cannon-es";
-			import { Sky } from 'three/addons/objects/Sky.js';
-			import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
-			import * as nipplejs from 'nipplejs';
-
-			// renderer
-			const renderer = new THREE.WebGLRenderer({antialias: true});
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			renderer.setPixelRatio( window.devicePixelRatio );
-			renderer.toneMapping = THREE.ACESFilmicToneMapping;
-			renderer.toneMappingExposure = 0.45;
-			renderer.outputEncoding = THREE.sRGBEncoding;
-			document.body.appendChild( renderer.domElement );
-
-			// camera
-			const CAMERA_FOV = 30.0;
-			const CAMERA_Z = 3.5;
-			const camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth / window.innerHeight, 0.1, 20.0 );
-			camera.position.set( -7, 3, CAMERA_Z );			
-
-			// camera controls
-			const controls = new OrbitControls( camera, renderer.domElement );
-			controls.screenSpacePanning = true;
-			controls.target.set( 0.0, 1.0, 0.0 );
-			controls.enabled = true;
-			controls.update();
-			
-
-			// scene
-			const scene = new THREE.Scene();
-
-			// light
-			const light = new THREE.DirectionalLight( 0xffffff );
-			light.position.set( 1.0, 1.0, 1.0 ).normalize();
-			scene.add( light );
-
-			// vrml stuff
-			const helperRoot = new THREE.Group();
-			helperRoot.renderOrder = 10000;
-			scene.add( helperRoot );
-
-			// gltf and vrm
-			let current = undefined;
-			let currentAnimationUrl = undefined;
-			let currentMixer = undefined;
-
-			let sky, sun;
-
-			var grassMaterial = undefined;
-			//************** Draw **************
-			var time = 0;
-			var lastFrame = Date.now();
-			var thisFrame;
-			var dT = 0;
-			var backgroundScene = new THREE.Scene();
-			var sphereBody;
-			var material;
-		
-
-			// cannon.js variables
-			let world;
-			let body;
-			var balls=[];
-			var ballMeshes=[];
-			var shereBody;
-			var sphereShape;
-			var physicsMaterial = new CANNON.Material("slipperyMaterial");
-
-			// animate
-			const clock = new THREE.Clock();
-			clock.start();
-
-			createScene();
-
-			class Character
-			{
-				constructor(settings)
-				{
-					this.settings = settings;
-					this.mixer = undefined;
-					this.model = this.settings.model;
-					this.vrm = undefined;
-					this.gltf = undefined;
-					this.stateMachine = undefined;
-					this.loader = undefined;	
-					this.handRight = undefined;
-					this.boundingBox = undefined;
-
-					this.machine = this.initStateMachine();
-
-				}
-
-				initStateMachine()
-				{
-					return this.createMachine(this, {
-						initialState: 'off',
-						off: {
-							actions: {
-								onEnter(obj) {
-									console.log('off: onEnter')
-								},
-								onExit(obj) {
-									console.log('off: onExit')
-								},
-							},
-							transitions: {
-								switch: {
-									target: 'init',
-									action(obj) {
-										console.log('transition action for "switch" in "off" state')
-									},
-								},
-							},
-						},
-						init: {
-							actions: {
-								onEnter(obj) {
-									console.log('init: onEnter')
-
-									obj.init();
-								},
-								onExit(obj) {
-									console.log('init: onExit')
-								},
-							},
-							transitions: {
-								switch: {
-									target: 'idle',
-									action(obj) {
-										console.log('transition action for "switch" in "init" state')
-									},
-								},
-							},
-						},
-						idle: {
-							actions: {
-								onEnter(obj) {
-									console.log('idle: onEnter')
-									obj.idle();
-								},
-								onExit(obj) {
-									console.log('idle: onExit')
-								},
-							},
-							transitions: {
-								switch: {
-									target: 'attack',
-									action(obj) {
-										console.log('transition action for "attack" in "idle" state')
-									},
-								},
-							},
-						},
-						attack: {
-							actions: {
-								onEnter(obj) {
-									console.log('attack: onEnter')
-									obj.attack();
-								},
-								onExit(obj) {
-									console.log('attack: onExit')
-								},
-							},
-							transitions: {
-								switch: {
-									target: 'idle',
-									action() {
-										console.log('transition action for "idle" in "attack" state')
-									},
-								},
-							},
-						},
-					})
-				}
-
-				createMachine(obj, stateMachineDefinition)
-				{
-					const machine = {
-						value: stateMachineDefinition.initialState,
-						transition(currentState, event) {
-							const currentStateDefinition = stateMachineDefinition[currentState]
-							const destinationTransition = currentStateDefinition.transitions[event]
-							if (!destinationTransition) {
-								return
-							}
-							const destinationState = destinationTransition.target
-							const destinationStateDefinition =
-								stateMachineDefinition[destinationState]
-
-							destinationTransition.action(obj)
-							currentStateDefinition.actions.onExit(obj)
-							destinationStateDefinition.actions.onEnter(obj)
-
-							machine.value = destinationState
-
-							return machine.value
-						},
-					}
-					return machine
-				}
-
-				animate(deltaTime)
-				{
-					// if animation is loaded
-					if ( this.mixer ) {
-						// update the animation
-						this.mixer.update( deltaTime );
-					}	
-						
-					// update vrm components
-					if ( this.vrm && 'update' in this.vrm ) {
-						this.vrm.update( clock.getDelta() );
-					}						
-				}
-				
-				idle() {
-					// Load animation
-					loadMixamoAnimation( this.settings.idleAnimation, this.vrm ).then( ( clip ) => {
-						// Apply the loaded animation to mixer and play
-						this.mixer.stopAllAction();
-						this.mixer.clipAction( clip ).play();
-					} );
-				}
-
-				attack() {
-					// Load animation
-					loadMixamoAnimation( '/assets/cast.fbx', this.vrm ).then( ( clip ) => {
-						this.mixer.stopAllAction();
-						// Apply the loaded animation to mixer and play
-						this.mixer.clipAction( clip ).play();
-						
-
-						var ballShape = new CANNON.Sphere(0.1);
-					var ballBody = new CANNON.Body({ mass: 1 });
-					var ballGeometry = new THREE.SphereGeometry(ballShape.radius);
-					var shootDirection = new THREE.Vector3();
-					var shootVelo = 15;
-					var mass = 5, radius = 1.3;
-
-					var sphereShape = new CANNON.Sphere(radius);
-					var material = new THREE.MeshLambertMaterial( { color: 0x04e6f6, emissive: 0xffffff } );
-					var sphereBody = new CANNON.Body({ mass: mass, material: physicsMaterial });
-					
-					// get and set update position of right hand bone from VRM
-					var handPos = new THREE.Vector3();
-					this.handRight.getWorldPosition(handPos);
-					sphereBody.position.x = handPos.x;
-					sphereBody.position.y = handPos.y;
-					sphereBody.position.z = handPos.z;
-					
-					function getShootDir(targetVec, sBody){
-						var vector = targetVec;
-						targetVec.set(0,0,1);
-						vector.unproject(camera);
-						var ray = new THREE.Ray(sBody.position, vector.sub(sBody.position).normalize() );
-						targetVec.x = ray.direction.x;
-						targetVec.y = ray.direction.y;
-						targetVec.z = ray.direction.z;
-					}
-
-                    var x = sphereBody.position.x;
-                    var y = sphereBody.position.y;
-                    var z = sphereBody.position.z;
-                    
-                    ballBody.addShape(ballShape);
-                    var ballMesh = new THREE.Mesh( ballGeometry, material );
-
-					world.addBody(ballBody);
-
-
-
-                    scene.add(ballMesh);
-					
-                    ballMesh.castShadow = true;
-                    ballMesh.receiveShadow = true;
-                    
-					// TODO fix global
-					balls.push(ballBody);
-                    ballMeshes.push(ballMesh);
-                    
-					getShootDir(shootDirection, sphereBody);
-                    ballBody.velocity.set(  shootDirection.x * shootVelo,
-                                            shootDirection.y * shootVelo,
-                                            shootDirection.z * shootVelo);
-
-                    // Move the ball outside the player sphere
-                    x += shootDirection.x * (sphereShape.radius*1.02 + ballShape.radius);
-                    y += shootDirection.y * (sphereShape.radius*1.02 + ballShape.radius);
-                    z += shootDirection.z * (sphereShape.radius*1.02 + ballShape.radius);
-                    ballBody.position.set(x,y,z);
-                    ballMesh.position.set(x,y,z);
-
-					// switch to idle state
-					console.log(this.machine.value)
-					this.machine.transition(this.machine.value, 'switch');
-
-					} );
-				}
-
-				init()
-				{
-					this.loader = new GLTFLoader();
-					this.loader.crossOrigin = 'anonymous';
-					this.loader.register( ( parser ) => {
-						//return new VRMLoaderPlugin( parser, { helperRoot: helperRoot, autoUpdateHumanBones: true } );
-						return new VRMLoaderPlugin( parser, { autoUpdateHumanBones: true } );
-
-					} );	
-
-					this.loader.load(
-
-						// URL of the VRM you want to load
-						this.model,
-
-						// called when the resource is loaded
-						( gltf ) => {
-							// calling these functions greatly improves the performance
-							VRMUtils.removeUnnecessaryVertices( gltf.scene );
-							VRMUtils.removeUnnecessaryJoints( gltf.scene );
-
-							if(gltf.userData.vrm) {
-								this.vrm = gltf.userData.vrm;
-								// Disable frustum culling
-								this.vrm.scene.traverse( (child) => {
-									child.frustumCulled = false;
-									if(child.name === 'J_Bip_R_Hand'){
-										this.handRight = child
-									}
-
-								} );
-
-							}
-
-
-							//current = this.vrm;
-							console.log( this.vrm );
-
-
-							this.gltf = gltf;
-
-							gltf.scene.position.set( this.settings.origin[0], this.settings.origin[1], this.settings.origin[2]);
-							gltf.scene.rotation.y = this.settings.rotation[1];
-							scene.add( gltf.scene );
-
-							this.boundingBox = new THREE.Box3().setFromObject(gltf.scene);
-							const helper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
-							scene.add(helper);
-
-							// create AnimationMixer for VRM
-							this.mixer = new THREE.AnimationMixer( gltf.scene );
-							this.mixer.timeScale = 2;
-
-
-							// switch to idle state
-							this.machine.transition(this.machine.value, 'switch');
-						},
-
-						// called while loading is progressing
-						( progress ) => console.log( 'Loading model...', 100.0 * ( progress.loaded / progress.total ), '%' ),
-
-						// called when loading has errors
-						( error ) => console.error( error )
-
-					);
-					
-				}
-			}
-
-			var settings = {
-				'model': function () { return 'model' },
-				'origin': function () { return 'origin' },
-				'rotation': function () {return 'rotation'},
-				'idleAnimation': function () { return 'idleAnimation' }
-			}
-
-			// templatize our settings
-			var templateMaker = function (object) {
-				return function (context) {
-					var replacer = function (key, val) {
-						if (typeof val === 'function') {
-							return context[val()]
-						}
-						return val;
-					}
-					return JSON.parse(JSON.stringify(settings, replacer))
-				}
-			}
-
-			var template = templateMaker(settings);
-
-			var data = {
-				model: './assets/Kohen.vrm',
-				origin: [0.5, 0, -2],
-				rotation: [0, 0, 0],
-				idleAnimation: './assets/idle_attack.fbx'
-			}
-
-			var k = new Character(template(data));
-			let statek = k.machine.value
-			console.log(`current state: ${statek}`)
-			statek = k.machine.transition(statek, 'switch')
-			console.log(`current state: ${statek}`)
-
-			var data = {
-				model: './assets/Eislee.vrm',
-				origin: [-0.5, 0, -2],
-				rotation: [0, 0, 0],
-				idleAnimation: './assets/idle_attack_look.fbx'
-			}
-
-			var e = new Character(template(data));
-			let statee = e.machine.value
-			console.log(`current state: ${statee}`)
-			statee = e.machine.transition(statee, 'switch')
-			console.log(`current state: ${statee}`)
-
-
-			var data = {
-				model: './assets/Orc.gltf',
-				origin: [0, 0, 2],
-				rotation: [0, Math.PI, 0],
-				idleAnimation: './assets/Orc.fbx'
-			}
-
-			var a = new Character(template(data));
-			let statea= a.machine.value
-			console.log(`current state: ${statea}`)
-			statea = a.machine.transition(statea, 'switch')
-			console.log(`current state: ${statea}`)
-
-
-			var characters = [];
-			characters.push(e);
-			characters.push(k);
-			characters.push(a);
-			
-			current = characters[0];
-
-			world = new CANNON.World()
-			world.gravity.set(0, -9.82, 0)
-
-
-			// Tweak contact properties.
-			// Contact stiffness - use to make softer/harder contacts
-			world.defaultContactMaterial.contactEquationStiffness = 1e8
-
-			// Stabilization time in number of timesteps
-			world.defaultContactMaterial.contactEquationRelaxation = 10
-			const groundShape = new CANNON.Plane()
-
-			body = new CANNON.Body({mass: 0})
-			body.addShape(groundShape)
-			body.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
-			world.addBody(body)
-
-			/*
-			// Add Sky
-			sky = new Sky();
-			sky.scale.setScalar( 450000 );
-			scene.add( sky );
-
-			sun = new THREE.Vector3();
-
-			const effectController = {
-				turbidity: 10,
-				rayleigh: 3,
-				mieCoefficient: 0.005,
-				mieDirectionalG: 0.7,
-				elevation: 2,
-				azimuth: 180,
-				exposure: renderer.toneMappingExposure
-			};
-
-			const uniforms = sky.material.uniforms;
-			uniforms[ 'turbidity' ].value = effectController.turbidity;
-			uniforms[ 'rayleigh' ].value = effectController.rayleigh;
-			uniforms[ 'mieCoefficient' ].value = effectController.mieCoefficient;
-			uniforms[ 'mieDirectionalG' ].value = effectController.mieDirectionalG;
-
-			const phi = THREE.MathUtils.degToRad( 90 - effectController.elevation );
-			const theta = THREE.MathUtils.degToRad( effectController.azimuth );
-
-			sun.setFromSphericalCoords( 1, phi, theta );
-
-			uniforms[ 'sunPosition' ].value.copy( sun );
-
-			renderer.toneMappingExposure = effectController.exposure;
-			renderer.render( scene, camera );
-			*/
-
-
-			/*
-			var geo = new THREE.PlaneGeometry(2000, 2000, 8, 8);
-			var mat = new THREE.MeshBasicMaterial({ color: 0x99ce67, side: THREE.DoubleSide });
-			var plane = new THREE.Mesh(geo, mat);
-			plane.rotateX( - Math.PI / 2);
-
-			scene.add(plane);
-			*/
-
-
-			// mixamo animation
-			function loadFBX( animationUrl ) {
-
-				currentAnimationUrl = animationUrl;
-
-				// create AnimationMixer for VRM
-				currentMixer = new THREE.AnimationMixer( current.scene );
-
-				// Load animation
-				loadMixamoAnimation( animationUrl, current ).then( ( clip ) => {
-
-					// Apply the loaded animation to mixer and play
-					currentMixer.clipAction( clip ).play();
-
-				} );
-			}
-
-			// helpers
-			//const gridHelper = new THREE.GridHelper( 10, 10 );
-			//scene.add( gridHelper );
-
-			//const axesHelper = new THREE.AxesHelper( 5 );
-			//scene.add( axesHelper );
-
-			var dt = 1/60;
-			function animate() {
-				requestAnimationFrame( animate );
-				world.step(dt);
-				
-				const deltaTime = clock.getDelta();
-				// loop through all of our characters that need animation
-				for(var i = 0; i < characters.length; i++) {
-					characters[i].animate(deltaTime)
-				}
-
-				var box;
-				// Update ball positions
-				for(var i=0; i<balls.length; i++){
-					ballMeshes[i].position.copy(balls[i].position);
-					ballMeshes[i].quaternion.copy(balls[i].quaternion);
-					
-					box = new THREE.Box3().setFromObject(ballMeshes[i]);
-					if (box.intersectsBox(a.boundingBox)) {
-						ballMeshes[i].visible = false;
-						console.log("oww");
-						//explosion here
-					}
-				}
-
-				time += dt;	
-				
-				grassMaterial.uniforms.time.value = time;
-
-				// render
-				//renderer.clear();
-				renderer.render(backgroundScene, camera);
-				renderer.render( scene, camera );
-			}
-
-			animate();
-
-			// dnd handler
-			window.addEventListener( 'dragover', function ( event ) {
-				event.preventDefault(s);
-			} );
-
-			window.addEventListener( 'drop', function ( event ) {
-				event.preventDefault();
-
-				// read given file then convert it to blob url
-				const files = event.dataTransfer.files;
-				if ( ! files ) return;
-
-				const file = files[ 0 ];
-				if ( ! file ) return;
-
-				const fileType = file.name.split( '.' ).pop();
-				const blob = new Blob( [ file ], { type: 'application/octet-stream' } );
-				const url = URL.createObjectURL( blob );
-
-				if ( fileType === 'fbx' ) {
-					loadFBX( url );
-				} else {
-					loadVRM( url );
-				}
-
-			} );
-
-
-			document.addEventListener('keydown', function(event) {
-
-				const oldObjectPosition = new THREE.Vector3();
-				current.vrm.scene.getWorldPosition(oldObjectPosition);
-
-				// NOTE Move object
-				if(event.keyCode == 87) { // w
-					current.vrm.scene.position.z +=0.1;
-
-					// create AnimationMixer for VRM
-					current.mixer = new THREE.AnimationMixer( current.vrm.scene );
-
-					// Load animation
-					loadMixamoAnimation( '/assets/run_forward.fbx', current.vrm ).then( ( clip ) => {
-
-						// Apply the loaded animation to mixer and play
-						current.mixer.clipAction( clip ).play();
-
-					} );
-				}
-
-				if(event.keyCode == 69) { // e
-					// create AnimationMixer for VRM
-					current.mixer = new THREE.AnimationMixer( current.vrm.scene );
-
-					// Load animation
-					loadMixamoAnimation( '/assets/cast2.fbx', current.vrm ).then( ( clip ) => {
-
-						// Apply the loaded animation to mixer and play
-						current.mixer.clipAction( clip ).play();
-
-					} );
-				}
-
-				if(event.keyCode == 32) { // space bar
-					// create AnimationMixer for VRM
-					current.machine.transition(current.machine.value, 'switch');
-
-				}
-
-				if(event.keyCode == 49) { // 1
-					current = e;
-				}
-
-				if(event.keyCode == 50) { // 2
-					current = k;
-				}
-
-				if(event.keyCode == 65) { // a
-					current.vrm.scene.position.x +=0.1;
-				}
-
-				if(event.keyCode == 83) { // s
-					current.vrm.scene.position.z -=0.1;
-				}
-
-				if(event.keyCode == 68) { // d
-					current.vrm.scene.position.x -=0.1;
-				}				
-
-
-				const newObjectPosition = new THREE.Vector3();
-				current.vrm.scene.getWorldPosition(newObjectPosition);
-
-				const delta = newObjectPosition.clone().sub(oldObjectPosition);
-
-				camera.position.add(delta);
-			} );
-
-
-			var options = {
-				zone: document.getElementById('zone_joystick'),
-			};
-			// TODO: Need to get this working
-			//var manager = nipplejs.create(options);
-
-
-
-			// https://codepen.io/al-ro/pen/GRJzYQK
-			function createScene() {
+  <head>
+    <meta charset="utf-8" />
+    <title>three-vrm example</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+    <style>
+body {
+  margin: 0;
+}
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="zone_joystick"></div>
+
+
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/",
+          "@pixiv/three-vrm": "https://unpkg.com/@pixiv/three-vrm@2.0.6/lib/three-vrm.module.js",
+          "cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js",
+          "nipplejs": "https://cdn.jsdelivr.net/npm/nipplejs@0.10.1/dist/nipplejs.js"
+
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from 'three';
+      import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+      import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+      import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+      import * as CANNON from "cannon-es";
+      import { Sky } from 'three/addons/objects/Sky.js';
+      import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+      import * as nipplejs from 'nipplejs';
+
+      // renderer
+      const renderer = new THREE.WebGLRenderer({antialias: true});
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      renderer.setPixelRatio( window.devicePixelRatio );
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.45;
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      document.body.appendChild( renderer.domElement );
+
+      // camera
+      const CAMERA_FOV = 30.0;
+      const CAMERA_Z = 3.5;
+      const camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth / window.innerHeight, 0.1, 20.0 );
+      camera.position.set( -7, 3, CAMERA_Z );			
+
+      // camera controls
+      const controls = new OrbitControls( camera, renderer.domElement );
+      controls.screenSpacePanning = true;
+      controls.target.set( 0.0, 1.0, 0.0 );
+      controls.enabled = true;
+      controls.update();
+
+
+      // scene
+      const scene = new THREE.Scene();
+
+      // light
+      const light = new THREE.DirectionalLight( 0xffffff );
+      light.position.set( 1.0, 1.0, 1.0 ).normalize();
+      scene.add( light );
+
+      // vrml stuff
+      const helperRoot = new THREE.Group();
+      helperRoot.renderOrder = 10000;
+      scene.add( helperRoot );
+
+      // gltf and vrm
+      let current = undefined;
+      let currentAnimationUrl = undefined;
+      let currentMixer = undefined;
+
+      let sky, sun;
+
+      var grassMaterial = undefined;
+      //************** Draw **************
+      var time = 0;
+      var lastFrame = Date.now();
+      var thisFrame;
+      var dT = 0;
+      var backgroundScene = new THREE.Scene();
+      var sphereBody;
+      var material;
+
+
+      // cannon.js variables
+      let world;
+      let body;
+      var balls=[];
+      var ballMeshes=[];
+      var shereBody;
+      var sphereShape;
+      var physicsMaterial = new CANNON.Material("slipperyMaterial");
+
+      // animate
+      const clock = new THREE.Clock();
+      clock.start();
+
+      createScene();
+
+      class HealthBar extends THREE.Sprite{
+        constructor(_progress){
+          super();
+          this.scale.set(2, 0.1);
+          this.material = new THREE.SpriteMaterial({
+            onBeforeCompile: shader => {
+              shader.uniforms.progress = _progress;
+              shader.fragmentShader = `
+                #define ss(a, b, c) smoothstep(a, b, c)
+                uniform float progress;
+                ${shader.fragmentShader}
+              `.replace(
+                `outgoingLight = diffuseColor.rgb;`,
+                `outgoingLight = diffuseColor.rgb;
+                  vec3 backColor = mix(vec3(0), vec3(0, 0.5, 0), progress);
+                  float pb = step(progress, vUv.x);
+                  outgoingLight.rgb = mix(vec3(0, 1, 0), backColor, pb);
+                `
+              );
+            }
+          });
+          this.material.defines = {"USE_UV" : ""};
+          this.center.set(0.5, 0);
+        }
+      }
+
+      class Character
+      {
+        constructor(settings)
+        {
+          this.settings = settings;
+          this.mixer = undefined;
+          this.model = this.settings.model;
+          this.vrm = undefined;
+          this.gltf = undefined;
+          this.stateMachine = undefined;
+          this.loader = undefined;	
+          this.handRight = undefined;
+          this.boundingBox = undefined;
+          this.boundingBoxSize = undefined;
+          this._progress = {value: 1};
+          this.hp = new HealthBar(this._progress);
+          this.machine = this.initStateMachine();
+        }
+
+        initStateMachine()
+        {
+          return this.createMachine(this, {
+            initialState: 'off',
+            off: {
+              actions: {
+                onEnter(obj) {
+                  console.log('off: onEnter')
+                },
+                onExit(obj) {
+                  console.log('off: onExit')
+                },
+              },
+              transitions: {
+                switch: {
+                  target: 'init',
+                  action(obj) {
+                    console.log('transition action for "switch" in "off" state')
+                  },
+                },
+              },
+            },
+            init: {
+              actions: {
+                onEnter(obj) {
+                  console.log('init: onEnter')
+
+                  obj.init();
+                },
+                onExit(obj) {
+                  console.log('init: onExit')
+                },
+              },
+              transitions: {
+                switch: {
+                  target: 'idle',
+                  action(obj) {
+                    console.log('transition action for "switch" in "init" state')
+                  },
+                },
+              },
+            },
+            idle: {
+              actions: {
+                onEnter(obj) {
+                  console.log('idle: onEnter')
+                  obj.idle();
+                },
+                onExit(obj) {
+                  console.log('idle: onExit')
+                },
+              },
+              transitions: {
+                switch: {
+                  target: 'attack',
+                  action(obj) {
+                    console.log('transition action for "attack" in "idle" state')
+                  },
+                },
+                ouch: {
+                  target: 'damaged',
+                  action(obj) {
+                    console.log('transition action for "damaged" in "idle" state')
+                  },
+                },
+              },
+            },
+            attack: {
+              actions: {
+                onEnter(obj) {
+                  console.log('attack: onEnter')
+                  obj.attack();
+                },
+                onExit(obj) {
+                  console.log('attack: onExit')
+                },
+              },
+              transitions: {
+                switch: {
+                  target: 'idle',
+                  action() {
+                    console.log('transition action for "idle" in "attack" state')
+                  },
+                },
+              },
+            },
+            damaged: {
+              actions: {
+                onEnter(obj) {
+                  console.log('attack: onEnter')
+                  obj.damaged();
+                },
+                onExit(obj) {
+                  console.log('attack: onExit')
+                },
+              },
+              transitions: {
+                switch: {
+                  target: 'idle',
+                  action() {
+                    console.log('transition action for "idle" in "damaged" state')
+                  },
+                },
+              },
+            },
+          })
+        }
+
+        createMachine(obj, stateMachineDefinition)
+        {
+          const machine = {
+            value: stateMachineDefinition.initialState,
+            transition(currentState, event) {
+              const currentStateDefinition = stateMachineDefinition[currentState]
+              const destinationTransition = currentStateDefinition.transitions[event]
+              if (!destinationTransition) {
+                return
+              }
+              const destinationState = destinationTransition.target
+              const destinationStateDefinition =
+                stateMachineDefinition[destinationState]
+
+              destinationTransition.action(obj)
+              currentStateDefinition.actions.onExit(obj)
+              destinationStateDefinition.actions.onEnter(obj)
+
+              machine.value = destinationState
+
+              return machine.value
+            },
+          }
+          return machine
+        }
+
+        animate(deltaTime)
+        {
+          // if animation is loaded
+          if ( this.mixer ) {
+            // update the animation
+            this.mixer.update( deltaTime );
+          }	
+
+          // update vrm components
+          if ( this.vrm && 'update' in this.vrm ) {
+            this.vrm.update( deltaTime );
+          }	
+        }
+
+
+        damaged() {
+          if(this.hp) {
+            this._progress.value -= .10;
+          }
+            
+          this.machine.transition(this.machine.value, 'switch');
+        }
+
+        idle() {
+          // Load animation
+          if(this.vrm && this.vrm.humanoid) {
+            loadMixamoAnimation( this.settings.idleAnimation, this.vrm ).then( ( clip ) => {
+              // Apply the loaded animation to mixer and play
+              this.mixer.stopAllAction();
+              this.mixer.clipAction( clip ).play();
+            } );
+          }
+        }
+
+        attack() {
+          // Load animation
+          loadMixamoAnimation( '/assets/cast.fbx', this.vrm ).then( ( clip ) => {
+            this.mixer.stopAllAction();
+            // Apply the loaded animation to mixer and play
+            this.mixer.clipAction( clip ).play();
+
+            var ballShape = new CANNON.Sphere(0.1);
+            var ballBody = new CANNON.Body({ mass: 1 });
+            var ballGeometry = new THREE.SphereGeometry(ballShape.radius);
+            var shootDirection = new THREE.Vector3();
+            var shootVelo = 15;
+            var mass = 5, radius = 1.3;
+
+            var sphereShape = new CANNON.Sphere(radius);
+            var material = new THREE.MeshLambertMaterial( { color: 0x04e6f6, emissive: 0xffffff } );
+            var sphereBody = new CANNON.Body({ mass: mass, material: physicsMaterial });
+
+            // get and set update position of right hand bone from VRM
+            var handPos = new THREE.Vector3();
+            this.handRight.getWorldPosition(handPos);
+            sphereBody.position.x = handPos.x;
+            sphereBody.position.y = handPos.y;
+            sphereBody.position.z = handPos.z;
+
+            function getShootDir(targetVec, sBody){
+              var vector = targetVec;
+              targetVec.set(0,0,1);
+              vector.unproject(camera);
+              var ray = new THREE.Ray(sBody.position, vector.sub(sBody.position).normalize() );
+              targetVec.x = ray.direction.x;
+              targetVec.y = ray.direction.y;
+              targetVec.z = ray.direction.z;
+            }
+
+            var x = sphereBody.position.x;
+            var y = sphereBody.position.y;
+            var z = sphereBody.position.z;
+
+            ballBody.addShape(ballShape);
+            var ballMesh = new THREE.Mesh( ballGeometry, material );
+
+            world.addBody(ballBody);
+
+            scene.add(ballMesh);
+
+            ballMesh.castShadow = true;
+            ballMesh.receiveShadow = true;
+
+            // TODO fix global
+            balls.push(ballBody);
+            ballMeshes.push(ballMesh);
+
+            getShootDir(shootDirection, sphereBody);
+            ballBody.velocity.set(  shootDirection.x * shootVelo,
+                                    shootDirection.y * shootVelo,
+                                    shootDirection.z * shootVelo);
+
+                      // Move the ball outside the player sphere
+                      x += shootDirection.x * (sphereShape.radius*1.02 + ballShape.radius);
+                      y += shootDirection.y * (sphereShape.radius*1.02 + ballShape.radius);
+                      z += shootDirection.z * (sphereShape.radius*1.02 + ballShape.radius);
+                      ballBody.position.set(x,y,z);
+                      ballMesh.position.set(x,y,z);
+
+            // switch to idle state
+            console.log(this.machine.value)
+            this.machine.transition(this.machine.value, 'switch');
+
+          } );
+        }
+
+        init()
+        {
+          this.loader = new GLTFLoader();
+          this.loader.crossOrigin = 'anonymous';
+          this.loader.register( ( parser ) => {
+            //return new VRMLoaderPlugin( parser, { helperRoot: helperRoot, autoUpdateHumanBones: true } );
+            return new VRMLoaderPlugin( parser, { autoUpdateHumanBones: true } );
+
+          } );	
+
+          this.loader.load(
+
+            // URL of the VRM you want to load
+            this.model,
+
+            // called when the resource is loaded
+            ( gltf ) => {
+              // calling these functions greatly improves the performance
+              VRMUtils.removeUnnecessaryVertices( gltf.scene );
+              VRMUtils.removeUnnecessaryJoints( gltf.scene );
+
+              if(gltf.userData.vrm) {
+                this.vrm = gltf.userData.vrm;
+                // Disable frustum culling
+                this.vrm.scene.traverse( (child) => {
+                  child.frustumCulled = false;
+                  if(child.name === 'J_Bip_R_Hand'){
+                    this.handRight = child
+                  }
+
+                } );
+              }
+
+              //current = this.vrm;
+              console.log( this.vrm );
+
+              this.gltf = gltf;
+              gltf.scene.position.set( this.settings.origin[0], this.settings.origin[1], this.settings.origin[2]);
+              gltf.scene.rotation.y = this.settings.rotation[1];
+              gltf.scene.add(this.hp);
+
+              scene.add( gltf.scene );
+
+              this.boundingBox = new THREE.Box3().setFromObject(gltf.scene);
+              this.boundingBoxSize = this.boundingBox.getSize(new THREE.Vector3());
+              const helper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
+              scene.add(helper);
+
+
+              // set progress bar
+              this.hp.position.y = this.boundingBoxSize.y * 1.1;
+              console.log(this.hp.position.y);
+
+
+              // create AnimationMixer for VRM
+              this.mixer = new THREE.AnimationMixer( gltf.scene );
+              this.mixer.timeScale = 2;
+
+
+              // switch to idle state
+              this.machine.transition(this.machine.value, 'switch');
+            },
+
+            // called while loading is progressing
+            ( progress ) => console.log( 'Loading model...', 100.0 * ( progress.loaded / progress.total ), '%' ),
+
+            // called when loading has errors
+            ( error ) => console.error( error )
+
+          );
+
+        }
+      }
+
+      var settings = {
+        'model': function () { return 'model' },
+        'origin': function () { return 'origin' },
+        'rotation': function () {return 'rotation'},
+        'idleAnimation': function () { return 'idleAnimation' }
+      }
+
+      // templatize our settings
+      var templateMaker = function (object) {
+        return function (context) {
+          var replacer = function (key, val) {
+            if (typeof val === 'function') {
+              return context[val()]
+            }
+            return val;
+          }
+          return JSON.parse(JSON.stringify(settings, replacer))
+        }
+      }
+
+      var template = templateMaker(settings);
+
+      var data = {
+        model: './assets/Kohen.vrm',
+        origin: [0.5, 0, -2],
+        rotation: [0, 0, 0],
+        idleAnimation: './assets/idle_attack.fbx'
+      }
+
+      var k = new Character(template(data));
+      let statek = k.machine.value
+      console.log(`current state: ${statek}`)
+      statek = k.machine.transition(statek, 'switch')
+      console.log(`current state: ${statek}`)
+
+      var data = {
+        model: './assets/Eislee.vrm',
+        origin: [-0.5, 0, -2],
+        rotation: [0, 0, 0],
+        idleAnimation: './assets/idle_attack_look.fbx'
+      }
+
+      var e = new Character(template(data));
+      let statee = e.machine.value
+      console.log(`current state: ${statee}`)
+      statee = e.machine.transition(statee, 'switch')
+      console.log(`current state: ${statee}`)
+
+
+      var data = {
+        model: './assets/Orc.gltf',
+        origin: [0, 0, 2],
+        rotation: [0, Math.PI, 0],
+        idleAnimation: './assets/Orc.fbx'
+      }
+
+      var a = new Character(template(data));
+      let statea= a.machine.value
+      console.log(`current state: ${statea}`)
+      statea = a.machine.transition(statea, 'switch')
+      console.log(`current state: ${statea}`)
+
+
+      var characters = [];
+      characters.push(e);
+      characters.push(k);
+      characters.push(a);
+
+      current = characters[0];
+
+      world = new CANNON.World()
+      world.gravity.set(0, -9.82, 0)
+
+
+      // Tweak contact properties.
+      // Contact stiffness - use to make softer/harder contacts
+      world.defaultContactMaterial.contactEquationStiffness = 1e8
+
+      // Stabilization time in number of timesteps
+      world.defaultContactMaterial.contactEquationRelaxation = 10
+      const groundShape = new CANNON.Plane()
+
+      body = new CANNON.Body({mass: 0})
+      body.addShape(groundShape)
+      body.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
+      world.addBody(body)
+
+      // mixamo animation
+      function loadFBX( animationUrl ) {
+
+        currentAnimationUrl = animationUrl;
+
+        // create AnimationMixer for VRM
+        currentMixer = new THREE.AnimationMixer( current.scene );
+
+        // Load animation
+        loadMixamoAnimation( animationUrl, current ).then( ( clip ) => {
+
+          // Apply the loaded animation to mixer and play
+          currentMixer.clipAction( clip ).play();
+
+        } );
+      }
+
+      // helpers
+      const gridHelper = new THREE.GridHelper( 10, 10 );
+      scene.add( gridHelper );
+
+      const axesHelper = new THREE.AxesHelper( 5 );
+      scene.add( axesHelper );
+
+      var dt = 1/60;
+      function animate() {
+        requestAnimationFrame( animate );
+        world.step(dt);
+
+        const deltaTime = clock.getDelta();
+        // loop through all of our characters that need animation
+        for(var i = 0; i < characters.length; i++) {
+          characters[i].animate(deltaTime)
+        }
+
+        var box;
+        // Update ball positions
+        for(var i=0; i<balls.length; i++){
+          ballMeshes[i].position.copy(balls[i].position);
+          ballMeshes[i].quaternion.copy(balls[i].quaternion);
+
+          box = new THREE.Box3().setFromObject(ballMeshes[i]);
+          if (box.intersectsBox(a.boundingBox)) {
+            ballMeshes[i].visible = false;
+            //scene.remove(ballMeshes[i]);
+            a.machine.transition(a.machine.value, 'ouch');
+            //explosion here
+          }
+        }
+
+        time += dt;	
+
+        grassMaterial.uniforms.time.value = time;
+
+        // render
+        //renderer.clear();
+        renderer.render(backgroundScene, camera);
+        renderer.render( scene, camera );
+      }
+
+      animate();
+
+      // dnd handler
+      window.addEventListener( 'dragover', function ( event ) {
+        event.preventDefault(s);
+      } );
+
+      window.addEventListener( 'drop', function ( event ) {
+        event.preventDefault();
+
+        // read given file then convert it to blob url
+        const files = event.dataTransfer.files;
+        if ( ! files ) return;
+
+        const file = files[ 0 ];
+        if ( ! file ) return;
+
+        const fileType = file.name.split( '.' ).pop();
+        const blob = new Blob( [ file ], { type: 'application/octet-stream' } );
+        const url = URL.createObjectURL( blob );
+
+        if ( fileType === 'fbx' ) {
+          loadFBX( url );
+        } else {
+          loadVRM( url );
+        }
+
+      } );
+
+
+      document.addEventListener('keydown', function(event) {
+
+        const oldObjectPosition = new THREE.Vector3();
+        current.vrm.scene.getWorldPosition(oldObjectPosition);
+
+        // NOTE Move object
+        if(event.keyCode == 87) { // w
+          current.vrm.scene.position.z +=0.1;
+
+          // create AnimationMixer for VRM
+          current.mixer = new THREE.AnimationMixer( current.vrm.scene );
+
+          // Load animation
+          loadMixamoAnimation( '/assets/run_forward.fbx', current.vrm ).then( ( clip ) => {
+
+            // Apply the loaded animation to mixer and play
+            current.mixer.clipAction( clip ).play();
+
+          } );
+        }
+
+        if(event.keyCode == 69) { // e
+          // create AnimationMixer for VRM
+          current.mixer = new THREE.AnimationMixer( current.vrm.scene );
+
+          // Load animation
+          loadMixamoAnimation( '/assets/cast2.fbx', current.vrm ).then( ( clip ) => {
+
+            // Apply the loaded animation to mixer and play
+            current.mixer.clipAction( clip ).play();
+
+          } );
+        }
+
+        if(event.keyCode == 32) { // space bar
+          // create AnimationMixer for VRM
+          current.machine.transition(current.machine.value, 'switch');
+
+        }
+
+        if(event.keyCode == 49) { // 1
+          current = e;
+        }
+
+        if(event.keyCode == 50) { // 2
+          current = k;
+        }
+
+        if(event.keyCode == 65) { // a
+          current.vrm.scene.position.x +=0.1;
+        }
+
+        if(event.keyCode == 83) { // s
+          current.vrm.scene.position.z -=0.1;
+        }
+
+        if(event.keyCode == 68) { // d
+          current.vrm.scene.position.x -=0.1;
+        }				
+
+
+        const newObjectPosition = new THREE.Vector3();
+        current.vrm.scene.getWorldPosition(newObjectPosition);
+
+        const delta = newObjectPosition.clone().sub(oldObjectPosition);
+
+        camera.position.add(delta);
+      } );
+
+
+      var options = {
+        zone: document.getElementById('zone_joystick'),
+      };
+      // TODO: Need to get this working
+      //var manager = nipplejs.create(options);
+
+
+      // https://codepen.io/al-ro/pen/GRJzYQK
+      function createScene() {
 
 
 //Variables for blade mesh
@@ -784,42 +802,42 @@ noiseTexture.wrapT = THREE.RepeatWrapping;
 //************** Sky **************
 //https://discourse.threejs.org/t/how-do-i-use-my-own-custom-shader-as-a-scene-background/13598/2
 const backgroundMaterial = new THREE.ShaderMaterial({
-	uniforms: {
-		sunDirection: {type: 'vec3', value: new THREE.Vector3(Math.sin(azimuth), Math.sin(elevation), -Math.cos(azimuth))},
-		resolution: {type: 'vec2', value: new THREE.Vector2(window.width, window.height)},
-		fogFade: {type: 'float', value: fogFade},
-		fov: {type: 'float', value: FOV}
-	},
-	vertexShader: `
-		varying vec2 vUv;
-		void main() {
-			vUv = uv;
-			gl_Position = vec4( position, 1.0 );    
-		}
+  uniforms: {
+    sunDirection: {type: 'vec3', value: new THREE.Vector3(Math.sin(azimuth), Math.sin(elevation), -Math.cos(azimuth))},
+    resolution: {type: 'vec2', value: new THREE.Vector2(window.width, window.height)},
+    fogFade: {type: 'float', value: fogFade},
+    fov: {type: 'float', value: FOV}
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = vec4( position, 1.0 );    
+    }
 `,
-	fragmentShader: `
-		varying vec2 vUv;
-		uniform vec2 resolution;
-		uniform vec3 sunDirection;
-		uniform float fogFade;
-		uniform float fov;
+  fragmentShader: `
+    varying vec2 vUv;
+    uniform vec2 resolution;
+    uniform vec3 sunDirection;
+    uniform float fogFade;
+    uniform float fov;
 
-		const vec3 skyColour = 0.6 * vec3(0.02, 0.2, 0.9);
-		//Darken sky when looking up
-		vec3 getSkyColour(vec3 rayDir){
-			return mix(0.35*skyColour, skyColour, pow(1.0-rayDir.y, 4.0));
-		}
+    const vec3 skyColour = 0.6 * vec3(0.02, 0.2, 0.9);
+    //Darken sky when looking up
+    vec3 getSkyColour(vec3 rayDir){
+      return mix(0.35*skyColour, skyColour, pow(1.0-rayDir.y, 4.0));
+    }
 
-		//https://iquilezles.org/www/articles/fog/fog.htm
-		vec3 applyFog(vec3 rgb, vec3 rayOri, vec3 rayDir, vec3 sunDir){
-			//Make horizon more hazy
-			float dist = 4000.0;
-			if(abs(rayDir.y) < 0.0001){rayDir.y = 0.0001;}
-			float fogAmount = 1.0 * exp(-rayOri.y*fogFade) * (1.0-exp(-dist*rayDir.y*fogFade))/(rayDir.y*fogFade);
-			float sunAmount = max( dot( rayDir, sunDir ), 0.0 );
-			vec3 fogColor  = mix(vec3(0.35, 0.5, 0.9), vec3(1.0, 1.0, 0.75), pow(sunAmount, 16.0) );
-		return mix(rgb, fogColor, clamp(fogAmount, 0.0, 1.0));
-		}
+    //https://iquilezles.org/www/articles/fog/fog.htm
+    vec3 applyFog(vec3 rgb, vec3 rayOri, vec3 rayDir, vec3 sunDir){
+      //Make horizon more hazy
+      float dist = 4000.0;
+      if(abs(rayDir.y) < 0.0001){rayDir.y = 0.0001;}
+      float fogAmount = 1.0 * exp(-rayOri.y*fogFade) * (1.0-exp(-dist*rayDir.y*fogFade))/(rayDir.y*fogFade);
+      float sunAmount = max( dot( rayDir, sunDir ), 0.0 );
+      vec3 fogColor  = mix(vec3(0.35, 0.5, 0.9), vec3(1.0, 1.0, 0.75), pow(sunAmount, 16.0) );
+    return mix(rgb, fogColor, clamp(fogAmount, 0.0, 1.0));
+    }
 
     vec3 ACESFilm(vec3 x){
       float a = 2.51;
@@ -829,56 +847,56 @@ const backgroundMaterial = new THREE.ShaderMaterial({
       float e = 0.14;
       return clamp((x*(a*x+b))/(x*(c*x+d)+e), 0.0, 1.0);
     }
-  
-		vec3 rayDirection(float fieldOfView, vec2 fragCoord) {
+
+    vec3 rayDirection(float fieldOfView, vec2 fragCoord) {
       vec2 xy = fragCoord - resolution.xy / 2.0;
       float z = (0.5 * resolution.y) / tan(radians(fieldOfView) / 2.0);
       return normalize(vec3(xy, -z));
     }
 
-		//https://www.geertarien.com/blog/2017/07/30/breakdown-of-the-lookAt-function-in-OpenGL/
-		mat3 lookAt(vec3 camera, vec3 at, vec3 up){
-			vec3 zaxis = normalize(at-camera);    
-			vec3 xaxis = normalize(cross(zaxis, up));
-			vec3 yaxis = cross(xaxis, zaxis);
+    //https://www.geertarien.com/blog/2017/07/30/breakdown-of-the-lookAt-function-in-OpenGL/
+    mat3 lookAt(vec3 camera, vec3 at, vec3 up){
+      vec3 zaxis = normalize(at-camera);    
+      vec3 xaxis = normalize(cross(zaxis, up));
+      vec3 yaxis = cross(xaxis, zaxis);
 
-			return mat3(xaxis, yaxis, -zaxis);
-		}
+      return mat3(xaxis, yaxis, -zaxis);
+    }
 
-		float getGlow(float dist, float radius, float intensity){
-			dist = max(dist, 1e-6);
-			return pow(radius/dist, intensity);	
-		}
+    float getGlow(float dist, float radius, float intensity){
+      dist = max(dist, 1e-6);
+      return pow(radius/dist, intensity);	
+    }
 
-		void main() {
+    void main() {
 
-    	vec3 target = vec3(0.0, 0.0, 0.0);
-    	vec3 up = vec3(0.0, 1.0, 0.0);
-			vec3 rayDir = rayDirection(fov, gl_FragCoord.xy);
+      vec3 target = vec3(0.0, 0.0, 0.0);
+      vec3 up = vec3(0.0, 1.0, 0.0);
+      vec3 rayDir = rayDirection(fov, gl_FragCoord.xy);
 
-			//Get the view matrix from the camera orientation
-			mat3 viewMatrix_ = lookAt(cameraPosition, target, up);
+      //Get the view matrix from the camera orientation
+      mat3 viewMatrix_ = lookAt(cameraPosition, target, up);
 
-			//Transform the ray to point in the correct direction
-			rayDir = viewMatrix_ * rayDir;
+      //Transform the ray to point in the correct direction
+      rayDir = viewMatrix_ * rayDir;
 
-			vec3 col = getSkyColour(rayDir);
+      vec3 col = getSkyColour(rayDir);
 
-    	//Draw sun
-			vec3 sunDir = normalize(sunDirection);
-			float mu = dot(sunDir, rayDir);
-    	col += vec3(1.0, 1.0, 0.8) * getGlow(1.0-mu, 0.00005, 0.9);
+      //Draw sun
+      vec3 sunDir = normalize(sunDirection);
+      float mu = dot(sunDir, rayDir);
+      col += vec3(1.0, 1.0, 0.8) * getGlow(1.0-mu, 0.00005, 0.9);
 
-    	col += applyFog(col, vec3(0,1000,0), rayDir, sunDir);
+      col += applyFog(col, vec3(0,1000,0), rayDir, sunDir);
 
-			//Tonemapping
-			col = ACESFilm(col);
+      //Tonemapping
+      col = ACESFilm(col);
 
-			//Gamma correction 1.0/2.2 = 0.4545...
-			col = pow(col, vec3(0.4545));
+      //Gamma correction 1.0/2.2 = 0.4545...
+      col = pow(col, vec3(0.4545));
 
-			gl_FragColor = vec4(col, 1.0 );
-		}
+      gl_FragColor = vec4(col, 1.0 );
+    }
 `
 });
 
@@ -904,7 +922,7 @@ var groundMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color("rgb(10
 var sharedPrefix = `
 uniform sampler2D noiseTexture;
 float getYPosition(vec2 p){
-	return 8.0*(2.0*texture2D(noiseTexture, p/800.0).r - 1.0);
+  return 8.0*(2.0*texture2D(noiseTexture, p/800.0).r - 1.0);
 }
 `;
 
@@ -943,7 +961,7 @@ vec3 getNormal(vec3 pos){
 
   vec3 tempP = getPosition(pos, eps, 0.0);
   vec3 tempN = getPosition(pos, -eps, 0.0);
-  
+
   vec3 slopeX = tempP - tempN;
 
   tempP = getPosition(pos, 0.0, eps);
@@ -963,12 +981,12 @@ groundMaterial.onBeforeCompile = function ( shader ) {
   shader.uniforms.posZ = { value: pos.y };
   shader.uniforms.radius = { value: radius };
   shader.uniforms.width = { value: width };
-	shader.uniforms.noiseTexture = { value: noiseTexture };
+  shader.uniforms.noiseTexture = { value: noiseTexture };
   shader.vertexShader = groundVertexPrefix + shader.vertexShader;
   shader.vertexShader = shader.vertexShader.replace(
       '#include <beginnormal_vertex>',
       `//https://dev.to/maurobringolf/a-neat-trick-to-compute-modulo-of-negative-numbers-111e
-			vec3 pos = vec3(0);
+      vec3 pos = vec3(0);
       pos.x = basePosition.x - mod(mod((delta*posX),delta) + delta, delta);
       pos.z = basePosition.z - mod(mod((delta*posZ),delta) + delta, delta);
       pos.y = max(0.0, placeOnSphere(pos)) - radius;
@@ -1039,42 +1057,42 @@ float placeOnSphere(vec3 v){
 
 void main() {
 
-	//Vertex height in blade geometry
-	frc = position.y / float(` + bladeHeight + `);
+  //Vertex height in blade geometry
+  frc = position.y / float(` + bladeHeight + `);
 
-	//Scale vertices
+  //Scale vertices
   vec3 vPosition = position;
-	vPosition.y *= scale;
+  vPosition.y *= scale;
 
-	//Invert scaling for normals
-	vNormal = normal;
-	vNormal.y /= scale;
+  //Invert scaling for normals
+  vNormal = normal;
+  vNormal.y /= scale;
 
-	//Rotate blade around Y axis
+  //Rotate blade around Y axis
   vec4 direction = vec4(0.0, halfRootAngle.x, 0.0, halfRootAngle.y);
-	vPosition = rotateVectorByQuaternion(vPosition, direction);
-	vNormal = rotateVectorByQuaternion(vNormal, direction);
+  vPosition = rotateVectorByQuaternion(vPosition, direction);
+  vNormal = rotateVectorByQuaternion(vNormal, direction);
 
   //UV for texture
   vUv = uv;
 
-	vec3 pos;
-	vec3 globalPos;
-	vec3 tile;
+  vec3 pos;
+  vec3 globalPos;
+  vec3 tile;
 
-	globalPos.x = offset.x-posX*delta;
-	globalPos.z = offset.z-posZ*delta;
+  globalPos.x = offset.x-posX*delta;
+  globalPos.z = offset.z-posZ*delta;
 
-	tile.x = floor((globalPos.x + 0.5 * width) / width);
-	tile.z = floor((globalPos.z + 0.5 * width) / width);
+  tile.x = floor((globalPos.x + 0.5 * width) / width);
+  tile.z = floor((globalPos.z + 0.5 * width) / width);
 
-	pos.x = globalPos.x - tile.x * width;
-	pos.z = globalPos.z - tile.z * width;
+  pos.x = globalPos.x - tile.x * width;
+  pos.z = globalPos.z - tile.z * width;
 
-	pos.y = max(0.0, placeOnSphere(pos)) - radius;
-	pos.y += getYPosition(vec2(pos.x+delta*posX, pos.z+delta*posZ));
-	
-	//Position of the blade in the visible patch [0->1]
+  pos.y = max(0.0, placeOnSphere(pos)) - radius;
+  pos.y += getYPosition(vec2(pos.x+delta*posX, pos.z+delta*posZ));
+
+  //Position of the blade in the visible patch [0->1]
   vec2 fractionalPos = 0.5 + offset.xz / width;
   //To make it seamless, make it a multiple of 2*PI
   fractionalPos *= TWO_PI;
@@ -1085,17 +1103,17 @@ void main() {
   noise = 0.5 + 0.5 * cos(fractionalPos.y + time);
   halfAngle -= noise * 0.05;
 
-	direction = normalize(vec4(sin(halfAngle), 0.0, -sin(halfAngle), cos(halfAngle)));
+  direction = normalize(vec4(sin(halfAngle), 0.0, -sin(halfAngle), cos(halfAngle)));
 
-	//Rotate blade and normals according to the wind
+  //Rotate blade and normals according to the wind
   vPosition = rotateVectorByQuaternion(vPosition, direction);
-	vNormal = rotateVectorByQuaternion(vNormal, direction);
+  vNormal = rotateVectorByQuaternion(vNormal, direction);
 
-	//Move vertex to global location
-	vPosition += pos;
+  //Move vertex to global location
+  vPosition += pos;
 
-	//Index of instance for varying colour in fragment shader
-	idx = index;
+  //Index of instance for varying colour in fragment shader
+  idx = index;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(vPosition, 1.0);
 
@@ -1128,12 +1146,12 @@ varying vec3 vNormal;
 varying vec3 vPosition;
 
 vec3 ACESFilm(vec3 x){
-	float a = 2.51;
-	float b = 0.03;
-	float c = 2.43;
-	float d = 0.59;
-	float e = 0.14;
-	return clamp((x*(a*x+b))/(x*(c*x+d)+e), 0.0, 1.0);
+  float a = 2.51;
+  float b = 0.03;
+  float c = 2.43;
+  float d = 0.59;
+  float e = 0.14;
+  return clamp((x*(a*x+b))/(x*(c*x+d)+e), 0.0, 1.0);
 }
 
 void main() {
@@ -1143,65 +1161,65 @@ void main() {
     discard;
   }
 
-	vec3 normal;
+  vec3 normal;
 
-	//Flip normals when viewing reverse of the blade
-	if(gl_FrontFacing){
-		normal = normalize(vNormal);
-	}else{
-		normal = normalize(-vNormal);
-	}
+  //Flip normals when viewing reverse of the blade
+  if(gl_FrontFacing){
+    normal = normalize(vNormal);
+  }else{
+    normal = normalize(-vNormal);
+  }
 
   //Get colour data from texture
-	vec3 textureColour = pow(texture2D(map, vUv).rgb, vec3(2.2));
+  vec3 textureColour = pow(texture2D(map, vUv).rgb, vec3(2.2));
 
   //Add different green tones towards root
-	vec3 mixColour = idx > 0.75 ? vec3(0.2, 0.8, 0.06) : vec3(0.5, 0.8, 0.08);
+  vec3 mixColour = idx > 0.75 ? vec3(0.2, 0.8, 0.06) : vec3(0.5, 0.8, 0.08);
   textureColour = mix(0.1 * mixColour, textureColour, 0.75);
 
-	vec3 lightTimesTexture = lightColour * textureColour;
+  vec3 lightTimesTexture = lightColour * textureColour;
   vec3 ambient = textureColour;
-	vec3 lightDir = normalize(sunDirection);
+  vec3 lightDir = normalize(sunDirection);
 
   //How much a fragment faces the light
-	float dotNormalLight = dot(normal, lightDir);
+  float dotNormalLight = dot(normal, lightDir);
   float diff = max(dotNormalLight, 0.0);
 
   //Colour when lit by light
   vec3 diffuse = diff * lightTimesTexture;
 
   float sky = max(dot(normal, vec3(0, 1, 0)), 0.0);
-	vec3 skyLight = sky * vec3(0.12, 0.29, 0.55);
+  vec3 skyLight = sky * vec3(0.12, 0.29, 0.55);
 
   vec3 viewDirection = normalize(cameraPosition - vPosition);
   vec3 halfwayDir = normalize(lightDir + viewDirection);
   //How much a fragment directly reflects the light to the camera
   float spec = pow(max(dot(normal, halfwayDir), 0.0), shininess);
-  
+
   //Colour of light sharply reflected into the camera
   vec3 specular = spec * specularColour * lightColour;
 
-	//https://en.wikibooks.org/wiki/GLSL_Programming/Unity/Translucent_Surfaces
-	vec3 diffuseTranslucency = vec3(0);
-	vec3 forwardTranslucency = vec3(0);
-	float dotViewLight = dot(-lightDir, viewDirection);
-	if(dotNormalLight <= 0.0){
-		diffuseTranslucency = lightTimesTexture * translucencyStrength * -dotNormalLight;
-		if(dotViewLight > 0.0){
-			forwardTranslucency = lightTimesTexture * translucencyStrength * pow(dotViewLight, 16.0);
-		}
-	}
+  //https://en.wikibooks.org/wiki/GLSL_Programming/Unity/Translucent_Surfaces
+  vec3 diffuseTranslucency = vec3(0);
+  vec3 forwardTranslucency = vec3(0);
+  float dotViewLight = dot(-lightDir, viewDirection);
+  if(dotNormalLight <= 0.0){
+    diffuseTranslucency = lightTimesTexture * translucencyStrength * -dotNormalLight;
+    if(dotViewLight > 0.0){
+      forwardTranslucency = lightTimesTexture * translucencyStrength * pow(dotViewLight, 16.0);
+    }
+  }
 
   vec3 col = 0.3 * skyLight * textureColour + ambientStrength * ambient + diffuseStrength * diffuse + specularStrength * specular + diffuseTranslucency + forwardTranslucency;
 
-	//Add a shadow towards root
-	col = mix(0.35*vec3(0.1, 0.25, 0.02), col, frc);
-	
+  //Add a shadow towards root
+  col = mix(0.35*vec3(0.1, 0.25, 0.02), col, frc);
+
   //Tonemapping
   col = ACESFilm(col);
 
   //Gamma correction 1.0/2.2 = 0.4545...
-	col = pow(col, vec3(0.4545));
+  col = pow(col, vec3(0.4545));
 
   gl_FragColor = vec4(col, 1.0);
 }`;
@@ -1275,22 +1293,22 @@ var halfRootAngles = [];
 
 //For each instance of the grass blade
 for (let i = 0; i < instances; i++){
-	
-	indices.push(i/instances);
-	
+
+  indices.push(i/instances);
+
   //Offset of the roots
   x = Math.random() * width - width/2;
   z = Math.random() * width - width/2;
   y = 0; 
   offsets.push(x, y, z);
 
-	//Random orientation
+  //Random orientation
   let angle = Math.PI - Math.random() * (2 * Math.PI);
   halfRootAngles.push(Math.sin(0.5*angle), Math.cos(0.5*angle));
 
   //Define variety in height
   if(i % 3 != 0){
-  	scales.push(2.0+Math.random() * 1.25);
+    scales.push(2.0+Math.random() * 1.25);
   }else{
     scales.push(2.0+Math.random()); 
   }
@@ -1310,17 +1328,17 @@ instancedGeometry.setAttribute( 'index', indexAttribute);
 grassMaterial = new THREE.RawShaderMaterial( {
   uniforms: {
     time: {type: 'float', value: 0},
-		delta: {type: 'float', value: delta },
-  	posX: {type: 'float', value: pos.x },
-  	posZ: {type: 'float', value: pos.y },
-  	radius: {type: 'float', value: radius },
-  	width: {type: 'float', value: width },
+    delta: {type: 'float', value: delta },
+    posX: {type: 'float', value: pos.x },
+    posZ: {type: 'float', value: pos.y },
+    radius: {type: 'float', value: radius },
+    width: {type: 'float', value: width },
     map: { value: grassTexture},
     alphaMap: { value: alphaMap},
     noiseTexture: { value: noiseTexture},
-		sunDirection: {type: 'vec3', value: new THREE.Vector3(Math.sin(azimuth), Math.sin(elevation), -Math.cos(azimuth))},
-		cameraPosition: {type: 'vec3', value: camera.position},
-		ambientStrength: {type: 'float', value: ambientStrength},
+    sunDirection: {type: 'vec3', value: new THREE.Vector3(Math.sin(azimuth), Math.sin(elevation), -Math.cos(azimuth))},
+    cameraPosition: {type: 'vec3', value: camera.position},
+    ambientStrength: {type: 'float', value: ambientStrength},
     translucencyStrength: {type: 'float', value: translucencyStrength},
     diffuseStrength: {type: 'float', value: diffuseStrength},
     specularStrength: {type: 'float', value: specularStrength},
@@ -1337,10 +1355,10 @@ var grass = new THREE.Mesh(instancedGeometry, grassMaterial);
 scene.add(grass);
 
 function cross(a, b){
-	return {x: a.y * b.z - a.z * b.y,
-					y: a.z * b.x - a.x * b.z,
-					z: a.x * b.y - a.y * b.x
-				 }; 
+  return {x: a.y * b.z - a.z * b.y,
+          y: a.z * b.x - a.x * b.z,
+          z: a.x * b.y - a.y * b.x
+         }; 
 }
 
 var viewDirection = new THREE.Vector3();
@@ -1360,9 +1378,9 @@ function placeOnSphere(v){
 
 //******* Sun uniform update *******
 function updateSunPosition(){
-	var sunDirection = new THREE.Vector3(Math.sin(azimuth), Math.sin(elevation), -Math.cos(azimuth));
+  var sunDirection = new THREE.Vector3(Math.sin(azimuth), Math.sin(elevation), -Math.cos(azimuth));
   grassMaterial.uniforms.sunDirection.value = sunDirection;
-	backgroundMaterial.uniforms.sunDirection.value = sunDirection;
+  backgroundMaterial.uniforms.sunDirection.value = sunDirection;
 }
 
 
@@ -1375,149 +1393,150 @@ function updateSunPosition(){
  * A map from Mixamo rig name to VRM Humanoid bone name
  */
  const mixamoVRMRigMap = {
-	mixamorigHips: 'hips',
-	mixamorigSpine: 'spine',
-	mixamorigSpine1: 'chest',
-	mixamorigSpine2: 'upperChest',
-	mixamorigNeck: 'neck',
-	mixamorigHead: 'head',
-	mixamorigLeftShoulder: 'leftShoulder',
-	mixamorigLeftArm: 'leftUpperArm',
-	mixamorigLeftForeArm: 'leftLowerArm',
-	mixamorigLeftHand: 'leftHand',
-	mixamorigLeftHandThumb1: 'leftThumbMetacarpal',
-	mixamorigLeftHandThumb2: 'leftThumbProximal',
-	mixamorigLeftHandThumb3: 'leftThumbDistal',
-	mixamorigLeftHandIndex1: 'leftIndexProximal',
-	mixamorigLeftHandIndex2: 'leftIndexIntermediate',
-	mixamorigLeftHandIndex3: 'leftIndexDistal',
-	mixamorigLeftHandMiddle1: 'leftMiddleProximal',
-	mixamorigLeftHandMiddle2: 'leftMiddleIntermediate',
-	mixamorigLeftHandMiddle3: 'leftMiddleDistal',
-	mixamorigLeftHandRing1: 'leftRingProximal',
-	mixamorigLeftHandRing2: 'leftRingIntermediate',
-	mixamorigLeftHandRing3: 'leftRingDistal',
-	mixamorigLeftHandPinky1: 'leftLittleProximal',
-	mixamorigLeftHandPinky2: 'leftLittleIntermediate',
-	mixamorigLeftHandPinky3: 'leftLittleDistal',
-	mixamorigRightShoulder: 'rightShoulder',
-	mixamorigRightArm: 'rightUpperArm',
-	mixamorigRightForeArm: 'rightLowerArm',
-	mixamorigRightHand: 'rightHand',
-	mixamorigRightHandPinky1: 'rightLittleProximal',
-	mixamorigRightHandPinky2: 'rightLittleIntermediate',
-	mixamorigRightHandPinky3: 'rightLittleDistal',
-	mixamorigRightHandRing1: 'rightRingProximal',
-	mixamorigRightHandRing2: 'rightRingIntermediate',
-	mixamorigRightHandRing3: 'rightRingDistal',
-	mixamorigRightHandMiddle1: 'rightMiddleProximal',
-	mixamorigRightHandMiddle2: 'rightMiddleIntermediate',
-	mixamorigRightHandMiddle3: 'rightMiddleDistal',
-	mixamorigRightHandIndex1: 'rightIndexProximal',
-	mixamorigRightHandIndex2: 'rightIndexIntermediate',
-	mixamorigRightHandIndex3: 'rightIndexDistal',
-	mixamorigRightHandThumb1: 'rightThumbMetacarpal',
-	mixamorigRightHandThumb2: 'rightThumbProximal',
-	mixamorigRightHandThumb3: 'rightThumbDistal',
-	mixamorigLeftUpLeg: 'leftUpperLeg',
-	mixamorigLeftLeg: 'leftLowerLeg',
-	mixamorigLeftFoot: 'leftFoot',
-	mixamorigLeftToeBase: 'leftToes',
-	mixamorigRightUpLeg: 'rightUpperLeg',
-	mixamorigRightLeg: 'rightLowerLeg',
-	mixamorigRightFoot: 'rightFoot',
-	mixamorigRightToeBase: 'rightToes',
+  mixamorigHips: 'hips',
+  mixamorigSpine: 'spine',
+  mixamorigSpine1: 'chest',
+  mixamorigSpine2: 'upperChest',
+  mixamorigNeck: 'neck',
+  mixamorigHead: 'head',
+  mixamorigLeftShoulder: 'leftShoulder',
+  mixamorigLeftArm: 'leftUpperArm',
+  mixamorigLeftForeArm: 'leftLowerArm',
+  mixamorigLeftHand: 'leftHand',
+  mixamorigLeftHandThumb1: 'leftThumbMetacarpal',
+  mixamorigLeftHandThumb2: 'leftThumbProximal',
+  mixamorigLeftHandThumb3: 'leftThumbDistal',
+  mixamorigLeftHandIndex1: 'leftIndexProximal',
+  mixamorigLeftHandIndex2: 'leftIndexIntermediate',
+  mixamorigLeftHandIndex3: 'leftIndexDistal',
+  mixamorigLeftHandMiddle1: 'leftMiddleProximal',
+  mixamorigLeftHandMiddle2: 'leftMiddleIntermediate',
+  mixamorigLeftHandMiddle3: 'leftMiddleDistal',
+  mixamorigLeftHandRing1: 'leftRingProximal',
+  mixamorigLeftHandRing2: 'leftRingIntermediate',
+  mixamorigLeftHandRing3: 'leftRingDistal',
+  mixamorigLeftHandPinky1: 'leftLittleProximal',
+  mixamorigLeftHandPinky2: 'leftLittleIntermediate',
+  mixamorigLeftHandPinky3: 'leftLittleDistal',
+  mixamorigRightShoulder: 'rightShoulder',
+  mixamorigRightArm: 'rightUpperArm',
+  mixamorigRightForeArm: 'rightLowerArm',
+  mixamorigRightHand: 'rightHand',
+  mixamorigRightHandPinky1: 'rightLittleProximal',
+  mixamorigRightHandPinky2: 'rightLittleIntermediate',
+  mixamorigRightHandPinky3: 'rightLittleDistal',
+  mixamorigRightHandRing1: 'rightRingProximal',
+  mixamorigRightHandRing2: 'rightRingIntermediate',
+  mixamorigRightHandRing3: 'rightRingDistal',
+  mixamorigRightHandMiddle1: 'rightMiddleProximal',
+  mixamorigRightHandMiddle2: 'rightMiddleIntermediate',
+  mixamorigRightHandMiddle3: 'rightMiddleDistal',
+  mixamorigRightHandIndex1: 'rightIndexProximal',
+  mixamorigRightHandIndex2: 'rightIndexIntermediate',
+  mixamorigRightHandIndex3: 'rightIndexDistal',
+  mixamorigRightHandThumb1: 'rightThumbMetacarpal',
+  mixamorigRightHandThumb2: 'rightThumbProximal',
+  mixamorigRightHandThumb3: 'rightThumbDistal',
+  mixamorigLeftUpLeg: 'leftUpperLeg',
+  mixamorigLeftLeg: 'leftLowerLeg',
+  mixamorigLeftFoot: 'leftFoot',
+  mixamorigLeftToeBase: 'leftToes',
+  mixamorigRightUpLeg: 'rightUpperLeg',
+  mixamorigRightLeg: 'rightLowerLeg',
+  mixamorigRightFoot: 'rightFoot',
+  mixamorigRightToeBase: 'rightToes',
 };
 
 function loadMixamoAnimation( url, vrm ) {
 
+            if(vrm === undefined){
+              return;
+            }
+
 const loader = new FBXLoader(); // A loader which loads FBX
 return loader.loadAsync( url ).then( ( asset ) => {
 
-	const clip = THREE.AnimationClip.findByName( asset.animations, 'mixamo.com' ); // extract the AnimationClip
+  const clip = THREE.AnimationClip.findByName( asset.animations, 'mixamo.com' ); // extract the AnimationClip
 
-	const tracks = []; // KeyframeTracks compatible with VRM will be added here
+  const tracks = []; // KeyframeTracks compatible with VRM will be added here
 
-	const restRotationInverse = new THREE.Quaternion();
-	const parentRestWorldRotation = new THREE.Quaternion();
-	const _quatA = new THREE.Quaternion();
-	const _vec3 = new THREE.Vector3();
+  const restRotationInverse = new THREE.Quaternion();
+  const parentRestWorldRotation = new THREE.Quaternion();
+  const _quatA = new THREE.Quaternion();
+  const _vec3 = new THREE.Vector3();
 
-	// Adjust with reference to hips height.
-	const motionHipsHeight = asset.getObjectByName( 'mixamorigHips' ).position.y;
-	const vrmHipsY = vrm.humanoid?.getNormalizedBoneNode( 'hips' ).getWorldPosition( _vec3 ).y;
-	const vrmRootY = vrm.scene.getWorldPosition( _vec3 ).y;
-	const vrmHipsHeight = Math.abs( vrmHipsY - vrmRootY );
-	const hipsPositionScale = vrmHipsHeight / motionHipsHeight;
+  // Adjust with reference to hips height.
+  const motionHipsHeight = asset.getObjectByName( 'mixamorigHips' ).position.y;
+  const vrmHipsY = vrm.humanoid?.getNormalizedBoneNode( 'hips' ).getWorldPosition( _vec3 ).y;
+  const vrmRootY = vrm.scene.getWorldPosition( _vec3 ).y;
+  const vrmHipsHeight = Math.abs( vrmHipsY - vrmRootY );
+  const hipsPositionScale = vrmHipsHeight / motionHipsHeight;
 
 
-	clip.tracks.forEach( ( track ) => {
+  clip.tracks.forEach( ( track ) => {
 
-		// Convert each tracks for VRM use, and push to `tracks`
-		const trackSplitted = track.name.split( '.' );
-		const mixamoRigName = trackSplitted[ 0 ];
-		const vrmBoneName = mixamoVRMRigMap[ mixamoRigName ];
-		const vrmNodeName = vrm.humanoid?.getNormalizedBoneNode( vrmBoneName )?.name;
-		const mixamoRigNode = asset.getObjectByName( mixamoRigName );
+    // Convert each tracks for VRM use, and push to `tracks`
+    const trackSplitted = track.name.split( '.' );
+    const mixamoRigName = trackSplitted[ 0 ];
+    const vrmBoneName = mixamoVRMRigMap[ mixamoRigName ];
+    const vrmNodeName = vrm.humanoid?.getNormalizedBoneNode( vrmBoneName )?.name;
+    const mixamoRigNode = asset.getObjectByName( mixamoRigName );
 
-		if ( vrmNodeName != null ) {
+    if ( vrmNodeName != null ) {
 
-			const propertyName = trackSplitted[ 1 ];
+      const propertyName = trackSplitted[ 1 ];
 
-			// Store rotations of rest-pose.
-			mixamoRigNode.getWorldQuaternion( restRotationInverse ).invert();
-			mixamoRigNode.parent.getWorldQuaternion( parentRestWorldRotation );
+      // Store rotations of rest-pose.
+      mixamoRigNode.getWorldQuaternion( restRotationInverse ).invert();
+      mixamoRigNode.parent.getWorldQuaternion( parentRestWorldRotation );
 
-			if ( track instanceof THREE.QuaternionKeyframeTrack ) {
+      if ( track instanceof THREE.QuaternionKeyframeTrack ) {
 
-				// Retarget rotation of mixamoRig to NormalizedBone.
-				for ( let i = 0; i < track.values.length; i += 4 ) {
+        // Retarget rotation of mixamoRig to NormalizedBone.
+        for ( let i = 0; i < track.values.length; i += 4 ) {
 
-					const flatQuaternion = track.values.slice( i, i + 4 );
+          const flatQuaternion = track.values.slice( i, i + 4 );
 
-					_quatA.fromArray( flatQuaternion );
+          _quatA.fromArray( flatQuaternion );
 
-					// 親のレスト時ワールド回転 * トラックの回転 * レスト時ワールド回転の逆
-					_quatA
-						.premultiply( parentRestWorldRotation )
-						.multiply( restRotationInverse );
+          // 親のレスト時ワールド回転 * トラックの回転 * レスト時ワールド回転の逆
+          _quatA
+            .premultiply( parentRestWorldRotation )
+            .multiply( restRotationInverse );
 
-					_quatA.toArray( flatQuaternion );
+          _quatA.toArray( flatQuaternion );
 
-					flatQuaternion.forEach( ( v, index ) => {
-						track.values[ index + i ] = v;
-					} );
-				}
+          flatQuaternion.forEach( ( v, index ) => {
+            track.values[ index + i ] = v;
+          } );
+        }
 
-				tracks.push(
-					new THREE.QuaternionKeyframeTrack(
-						`${vrmNodeName}.${propertyName}`,
-						track.times,
-						track.values.map( ( v, i ) => ( vrm.meta?.metaVersion === '0' && i % 2 === 0 ? - v : v ) ),
-					),
-				);
+        tracks.push(
+          new THREE.QuaternionKeyframeTrack(
+            `${vrmNodeName}.${propertyName}`,
+            track.times,
+            track.values.map( ( v, i ) => ( vrm.meta?.metaVersion === '0' && i % 2 === 0 ? - v : v ) ),
+          ),
+        );
 
-			} else if ( track instanceof THREE.VectorKeyframeTrack ) {
+      } else if ( track instanceof THREE.VectorKeyframeTrack ) {
 
-				const value = track.values.map( ( v, i ) => ( vrm.meta?.metaVersion === '0' && i % 3 !== 1 ? - v : v ) * hipsPositionScale );
-				tracks.push( new THREE.VectorKeyframeTrack( `${vrmNodeName}.${propertyName}`, track.times, value ) );
+        const value = track.values.map( ( v, i ) => ( vrm.meta?.metaVersion === '0' && i % 3 !== 1 ? - v : v ) * hipsPositionScale );
+        tracks.push( new THREE.VectorKeyframeTrack( `${vrmNodeName}.${propertyName}`, track.times, value ) );
 
-			}
+      }
 
-		}
+    }
 
-	} );
+  } );
 
-	return new THREE.AnimationClip( 'vrmAnimation', clip.duration, tracks );
+  return new THREE.AnimationClip( 'vrmAnimation', clip.duration, tracks );
 
 } );
 
+
 }
-		</script>
-	</body>
+
+    </script>
+  </body>
 </html>
-
-
-
-
-
