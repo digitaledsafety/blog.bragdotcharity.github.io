@@ -4,4 +4,4 @@ tags: [NFT]
 repostlink: https://cointelegraph.com/news/thrash-metal-band-megadeth-launches-nft-collection-and-metaverse-community
 ---
 
-{% include embed/linkpreview-remote.html %}
+{% include embed/linkpreview-repost.html %}
