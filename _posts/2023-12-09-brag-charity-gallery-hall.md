@@ -1,6 +1,7 @@
 ---
 title: brag.charity Gallery Community Exhibit
 tags: [NFT, blockchain]
+pin: true
 ---
 
 GM! 🌄 We've added a new leg to our non-profit's Web 3 gallery dedicated to the awesome NFT community!
