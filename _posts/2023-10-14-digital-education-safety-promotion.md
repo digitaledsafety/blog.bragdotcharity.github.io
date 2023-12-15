@@ -1,6 +1,5 @@
 ---
 comments: false
-pin: true
 ---
 
 For the past few years (part time), I've been working on standing up a non-profit focused on tech and STEM/STEAM. It's been an exciting experience for me. I've been fortunate enough to have a small but awesome support system in doing so.
