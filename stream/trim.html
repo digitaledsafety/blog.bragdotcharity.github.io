@@ -46,11 +46,11 @@
 
 
     <h2>Image</h2>
-    <p>Source image: </p>
-    <input type="file" id="uploaderImg">
+    <p>Source: </p>
+    <input type="file" id="uploaderImg" multiple>
     <BR>
     <br>
-    <p>Rotated and enlarged image: </p>
+    <p>Result: </p>
     <img id="rotatedImage">
 
     <script type='module'>
@@ -68,7 +68,7 @@
 
         // calling image magick with one source image, and command to rotate & resize image
         const fileObj = [{ 'name': 'srcFile', 'content': sourceBytes }];
-        const command = ["convert", "srcFile", "-strip", "-quality", "86", "-resize", "200%", "out"];
+        const command = ["convert", "srcFile", "-strip", "-quality", "86", "out"];
         let processedFiles = await Magick.Call(fileObj, command);
 
         // response can be multiple files (example split)
