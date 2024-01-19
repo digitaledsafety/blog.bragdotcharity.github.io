@@ -526,9 +526,9 @@
       <script>
         var parsedUrl = new URL(window.location.toString());
         document.getElementById("shareRepost").style.display = block;
-        document.getElementById("shareTitle").textContent = parsedUrl.searchParams.get('name');
-        document.getElementById("shareUrl").textContent = parsedUrl.searchParams.get('link');
-        document.getElementById("shareDescription").textContent = parsedUrl.searchParams.get('description');
+        document.getElementById("shareTitle").textContent = parsedUrl.searchParams.get('title');
+        document.getElementById("shareUrl").textContent = parsedUrl.searchParams.get('url');
+        document.getElementById("shareDescription").textContent = parsedUrl.searchParams.get('text');
       </script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
