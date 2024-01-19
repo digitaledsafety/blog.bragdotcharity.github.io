@@ -507,18 +507,17 @@
 
       <script>
         var parsedUrl = new URL(window.location.toString());
-        var copyText = `
-          {% raw %}
-          ---
-          title: "Repost: ${parsedUrl.searchParams.get('title')}"
-          repostlink: "${parsedUrl.searchParams.get('url')}"
-          description: "${parsedUrl.searchParams.get('text')}"
-          tags: []
-          ---
-  
-          {% include embed/linkpreview-repost.html %}
-          {% endraw %}
-        `;
+        var copyText = 
+`{% raw %}
+---
+title: "Repost: ${parsedUrl.searchParams.get('title')}"
+repostlink: "${parsedUrl.searchParams.get('url')}"
+description: "${parsedUrl.searchParams.get('text')}"
+tags: []
+---
+
+{% include embed/linkpreview-repost.html %}
+{% endraw %}`;
 
         navigator.clipboard.writeText(copyText);
       </script>
