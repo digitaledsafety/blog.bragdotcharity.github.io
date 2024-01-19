@@ -525,7 +525,7 @@
 
       <script>
         var parsedUrl = new URL(window.location.toString());
-        document.getElementById("shareRepost").style.display = block;
+        document.getElementById("shareRepost").style.display = "block";
         document.getElementById("shareTitle").textContent = parsedUrl.searchParams.get('title');
         document.getElementById("shareUrl").textContent = parsedUrl.searchParams.get('url');
         document.getElementById("shareDescription").textContent = parsedUrl.searchParams.get('text');
