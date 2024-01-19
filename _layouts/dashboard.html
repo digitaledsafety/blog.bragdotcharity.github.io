@@ -252,24 +252,7 @@
 
 
             <div class="container my-5">
-              <div style="display:none;" id="shareRepost">
-                <pre>
-                  <code>
-                    {% raw %}
-                    ---
-                    title: "Repost: <span id="shareTitle"></span>"
-                    repostlink: "<span id="shareUrl"></span>"
-                    description: "<span id="shareDescription"></span>"
-                    tags: []
-                    ---
-  
-                    {% include embed/linkpreview-repost.html %}
-                    {% endraw %}
-                 </code>
-                </pre>
-              </div>
-
-            
+         
               <h2>Image</h2>
               <p>Source: </p>
               <div><input type="file" id="uploaderImg" multiple></div>
@@ -522,13 +505,22 @@
         </div>
       </div>
 
-
       <script>
         var parsedUrl = new URL(window.location.toString());
-        document.getElementById("shareRepost").style.display = "block";
-        document.getElementById("shareTitle").textContent = parsedUrl.searchParams.get('title');
-        document.getElementById("shareUrl").textContent = parsedUrl.searchParams.get('url');
-        document.getElementById("shareDescription").textContent = parsedUrl.searchParams.get('text');
+        var copyText = `
+          {% raw %}
+          ---
+          title: "Repost: ${parsedUrl.searchParams.get('title')}"
+          repostlink: "${parsedUrl.searchParams.get('url')}"
+          description: "${parsedUrl.searchParams.get('text')}"
+          tags: []
+          ---
+  
+          {% include embed/linkpreview-repost.html %}
+          {% endraw %}
+        `;
+
+        navigator.clipboard.writeText(copyText);
       </script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
