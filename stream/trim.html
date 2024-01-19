@@ -5,6 +5,7 @@
     <script src="/stream/assets/util/package/dist/umd/index.js"></script>
   </head>
   <body>
+    <h2>Video</h2>
     <h3>Upload a mp4 (x264) video and trim its first 1 seconds and play!</h3>
     <video id="output-video" controls></video><br/>
     <input type="file" id="uploader">
@@ -41,5 +42,48 @@
       const elm = document.getElementById('uploader');
       elm.addEventListener('change', trim);
     </script>
+
+
+
+    <h2>Image</h2>
+    <p>Source image: </p>
+    <input type="file" id="uploaderImg">
+    <BR>
+    <br>
+    <p>Rotated and enlarged image: </p>
+    <img id="rotatedImage">
+
+    <script type='module'>
+      //import the library to talk to imagemagick
+      // import * as Magick from 'https://knicknic.github.io/wasm-imagemagick/magickApi.js';
+      import * as Magick from 'https://cdn.jsdelivr.net/npm/wasm-imagemagick/dist/bundles/magickApi.js';
+      
+      // various html elements
+      let rotatedImage = document.getElementById('rotatedImage');
+
+      const optimize = async ({ target: { files } }) => {
+        const { name } = files[0];
+        let arrayBuffer = await files[0].arrayBuffer();
+        let sourceBytes = new Uint8Array(arrayBuffer);
+
+        // calling image magick with one source image, and command to rotate & resize image
+        const fileObj = [{ 'name': 'srcFile', 'content': sourceBytes }];
+        const command = ["convert", "srcFile", "-strip", "-quality", "86", "-resize", "200%", "out"];
+        let processedFiles = await Magick.Call(fileObj, command);
+
+        // response can be multiple files (example split)
+        // here we know we just have one
+        let firstOutputImage = processedFiles[0]
+        rotatedImage.src = URL.createObjectURL(firstOutputImage['blob'])
+        console.log("created image " + firstOutputImage['name']);
+      }
+
+      const elmImg = document.getElementById('uploaderImg');
+      elmImg.addEventListener('change', optimize);
+
+      
+    </script>
+
+
   </body>
 </html>
