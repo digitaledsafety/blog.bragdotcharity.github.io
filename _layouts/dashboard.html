@@ -290,8 +290,8 @@
                   const fileObj = [{ 'name': 'srcFile', 'content': sourceBytes }];
                   // https://stackoverflow.com/questions/12424018/how-to-replace-white-background-color-with-transparent-of-an-image-in-imagemagic
                   // https://stackoverflow.com/questions/40127266/change-jpeg-into-progressive-jpeg-image
-          
-                  const command = ["convert", "srcFile", "-strip", "-quality", "86", "out"];
+
+                  const command = ["convert", "srcFile", "-strip", "-quality", "86", "-interlace", "plane", "out"];
                   let processedFiles = await Magick.Call(fileObj, command);
           
                   // response can be multiple files (example split)
