@@ -260,6 +260,8 @@
               <div>
                 <button id= "optimize" class="btn btn-primary">Optimize</button>
                 <button id= "removeBg" class="btn btn-primary">Remove Background</button>
+                <button id= "anaglyph" class="btn btn-primary">Anaglyphize</button>
+
               </div>
 
               <br/>
@@ -268,8 +270,6 @@
           
               <script type='module'>
 
-                var imageMain = null;
-
                 //import the library to talk to imagemagick
                 // import * as Magick from 'https://knicknic.github.io/wasm-imagemagick/magickApi.js';
                 import * as Magick from 'https://cdn.jsdelivr.net/npm/wasm-imagemagick/dist/bundles/magickApi.js';
@@ -277,6 +277,7 @@
                 // various html elements
                 let rotatedImage = document.getElementById('rotatedImage');
           
+                var imageMain = null;
                 const upload = async ({ target: { files } }) => {
                   imageMain = files[0];
                 }
@@ -319,12 +320,32 @@
                   console.log("created image " + firstOutputImage['name']);    
                 }
 
+                var anaglyph = async function() {
+                  let arrayBuffer = await imageMain.arrayBuffer();
+                  let sourceBytes = new Uint8Array(arrayBuffer);
+          
+                  // calling image magick with one source image, and command to rotate & resize image
+                  const fileObj = [{ 'name': 'srcFile', 'content': sourceBytes }];
+
+                  //https://github.com/ImageMagick/ImageMagick/discussions/6181
+                  //https://legacy.imagemagick.org/discourse-server/viewtopic.php?t=12424&start=15
+                  const command = [ "convert", "srcFile", "-background", "black", "-gravity", "east", "-splice", "5x0+0+0", "(", "+clone", "-roll", "+5+0", ")", "(", "+clone", ")", "-combine", "out" ];
+                  let processedFiles = await Magick.Call(fileObj, command);
+          
+                  // response can be multiple files (example split)
+                  // here we know we just have one
+                  let firstOutputImage = processedFiles[0]
+                  rotatedImage.src = URL.createObjectURL(firstOutputImage['blob'])
+                  console.log("created image " + firstOutputImage['name']);    
+                }
+  
                 // save image after upload
                 document.getElementById('uploaderImg').addEventListener('change', upload);
                 
                 // image actions
                 document.getElementById('optimize').addEventListener('click', optimize);
                 document.getElementById('removeBg').addEventListener('click', removeBg);
+                document.getElementById('anaglyph').addEventListener('click', anaglyph);
               
               </script>
 
