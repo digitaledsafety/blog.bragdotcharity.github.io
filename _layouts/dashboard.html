@@ -161,24 +161,13 @@
                       Video
                     </a>
                   </li>
-                
                 </ul>
-      
-       
               </div>
             </div>
           </div>
-
-
-
-
-      
           <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
-
-
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                   <h1 class="h2">Dashboard</h1>
                   <div class="btn-toolbar mb-2 mb-md-0">
@@ -193,7 +182,6 @@
                   </div>
                 </div>
                 <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-      
                 <h2>Section title</h2>
                 <div class="table-responsive small">
                   <table class="table table-striped table-sm">
@@ -322,8 +310,6 @@
                     </tbody>
                   </table>
                 </div>
-
-
               </div>
               <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
 
@@ -420,24 +406,14 @@
                   document.getElementById('anaglyph').addEventListener('click', anaglyph);
                 
                 </script>
-  
-
-
-
               </div>
               <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab">
-
-
-
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                   <h1 class="h2">Video</h1>
                 </div>
-                <p>Upload a mp4 (x264) video and trim its first 1 seconds and play!</p>
                 <input type="file" id="uploader">
                 <div class="my-2">
-                  <button id= "trim" class="btn btn-primary">Trim</button>
-                  <button id= "encodeX" class="btn btn-primary">Encode for X</button>
-                
+                  <button id= "encode" class="btn btn-primary">Encode</button>           
                 </div>  
                 <p id="message"></p>
                 <video class="my-2" style="width:100%;" id="output-video" controls></video><br/>
@@ -451,32 +427,7 @@
                     videoMain = files[0];
                   }
 
-                  const trim = async function() {
-                    const message = document.getElementById('message');
-                    if (ffmpeg === null) {
-                      ffmpeg = new FFmpeg();
-                      ffmpeg.on("log", ({ message }) => {
-                        console.log(message);
-                      })
-                      ffmpeg.on("progress", ({ progress }) => {
-                        message.innerHTML = `${progress * 100} %`;
-                      });
-                      await ffmpeg.load({
-                        coreURL: "/stream/assets/core/package/dist/umd/ffmpeg-core.js",
-                      });
-                    }
-                    const { name } = videoMain;
-                    await ffmpeg.writeFile(name, await fetchFile(videoMain));
-                    message.innerHTML = 'Start trimming';
-                    await ffmpeg.exec(['-i', name, '-ss', '0', '-to', '1', 'output.mp4']);
-                    message.innerHTML = 'Complete trimming';
-                    const data = await ffmpeg.readFile('output.mp4');
-            
-                    const video = document.getElementById('output-video');
-                    video.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-                  }
-
-                  const encodeX = async function() {
+                  const encode = async function() {
                     const message = document.getElementById('message');
                     if (ffmpeg === null) {
                       ffmpeg = new FFmpeg();
@@ -496,29 +447,15 @@
                     await ffmpeg.exec(['-i', name, '-c:v', 'copy', '-strict', 'experimental', 'output.mp4']);
                     message.innerHTML = 'Complete encoding';
                     const data = await ffmpeg.readFile('output.mp4');
-            
                     const video = document.getElementById('output-video');
                     video.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
                   }
                   document.getElementById('uploader').addEventListener('change', uploadVideo);
 
-                  document.getElementById('trim').addEventListener('click', trim);
-                  document.getElementById('encodeX').addEventListener('click', encodeX);
-                
+                  document.getElementById('encode').addEventListener('click', encode);
                 </script>
-            
-
-
-
               </div>
             </div>
-
-
-      
-
-
-
-
           </main>
         </div>
       </div>
@@ -541,7 +478,6 @@ tags: []
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
     <script src="https://getbootstrap.com/docs/5.3/examples/dashboard/dashboard.js"></script></body>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   </body>
 </html>
