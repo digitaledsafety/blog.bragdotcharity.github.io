@@ -401,7 +401,7 @@
   
                     //https://github.com/ImageMagick/ImageMagick/discussions/6181
                     //https://legacy.imagemagick.org/discourse-server/viewtopic.php?t=12424&start=15
-                    const command = [ "convert", "srcFile", "-background", "black", "-gravity", "east", "-splice", "7x0+0+0", "(", "+clone", "-roll", "+7+0", ")", "(", "+clone", ")", "-combine", "out" ];
+                    const command = [ "convert", "srcFile", "-background", "black", "-gravity", "east", "-splice", "6x0+0+0", "(", "+clone", "-roll", "+6+0", ")", "(", "+clone", ")", "-combine", "out" ];
                     let processedFiles = await Magick.Call(fileObj, command);
             
                     // response can be multiple files (example split)
