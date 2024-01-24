@@ -356,8 +356,7 @@
                   <h1 class="h2">Call</h1>
                   <div class="btn-group me-2">
                     <button id="connect" type="button" onclick="connect()" class="btn btn-sm btn-outline-secondary">Connect</button>
-                  </div>
-                </div>               
+                  </div>              
                 </div>
 
                 <div><video id="video1" hidden="hidden" controls autoplay></video></div>
@@ -761,15 +760,15 @@
       <script>
         var parsedUrl = new URL(window.location.toString());
         var copyText = 
-`{% raw %}
----
+{% raw %}
+`---
 title: "Repost: ${parsedUrl.searchParams.get('title')}"
 repostlink: "${parsedUrl.searchParams.get('text')}"
 tags: []
 ---
 
-{% include embed/linkpreview-repost.html %}
-{% endraw %}`;
+{% include embed/linkpreview-repost.html %}`
+{% endraw %};
 
         navigator.clipboard.writeText(copyText);
       </script>
