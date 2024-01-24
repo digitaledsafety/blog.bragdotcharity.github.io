@@ -354,15 +354,19 @@
 
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                   <h1 class="h2">Call</h1>
+                  <div class="btn-group me-2">
+                    <button id="connect" type="button" onclick="connect()" class="btn btn-sm btn-outline-secondary">Connect</button>
+                  </div>
+                </div>               
                 </div>
 
                 <div><video id="video1" hidden="hidden" controls autoplay></video></div>
                 <div style="width:50%;" class="mycanvas">
                   <canvas style="width:100%;" id="mycanvas"></canvas>
                 </div>
-                <button class="btn btn-primary" onclick="camera()">Cam</button>
-                <button class="btn btn-primary" onclick="screen()">Screen</button>
-                <button class="btn btn-primary" onclick="audio()">Audio</button>
+                <button id="cam" disabled class="btn btn-primary" onclick="captureCamera()">Cam</button>
+                <button id="screen" disabled class="btn btn-primary" onclick="captureScreen()">Screen</button>
+                <button id="audio" disabled class="btn btn-primary" onclick="captureAudio()">Audio</button>
 
                 <p id="msg"></p>
                 <p id="peerid"></p>
@@ -382,22 +386,13 @@
                   var context = canvas.getContext("2d", { willReadFrequently: true });
                   
                   var video = document.querySelector('#video1');
+                  var cam = document.getElementById("cam");
+                  var screen = document.getElementById("screen");
+                  var audio = document.getElementById("audio");
               
                   var calls = [];
                   var connections = [];		
-                  
-                  // After DOM loaded	
-                  document.addEventListener("DOMContentLoaded", function(){	
-                          var displayMediaOptions = {
-                            video: true,
-                            audio: true,
-                    };			
-                    getDevices(displayMediaOptions, function() {
-                      initCall();			
-                    });
-              
-                  });		
-              
+     
                   video.addEventListener('play', function () {
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;		
@@ -458,30 +453,15 @@
                   }
                   
                   function getDevices(options, cb) {		
-                    if (!navigator.mediaDevices && !navigator.mediaDevices.getUserMedia) {
-                      navigator.userMedia = navigator.mozGetUserMedia || navigator.getUserMedia
-                      if (!navigator.userMedia) {
-                            alert("Please Update or Use Different Browser");
-                      }
-                      
-                      navigator.userMedia(options, (stream) => {
+                    navigator.mediaDevices
+                      .getUserMedia(options)
+                      .then((stream) => {
                         showCam(stream);
                         cb();
-                      })	
-                      .catch(error => {
-                        alert('Error');
-                      });							
-                          return;
-                    }
-              
-                    window.navigator.mediaDevices.getUserMedia(options)
-                    .then(stream => {
-                      showCam(stream);
-                      cb();
-                    })
-                    .catch(error => {
-                      alert('Please enable mic and camera');
-                    });
+                      })
+                      .catch((err) => {
+                        alert('Please use a supported browser!');
+                      });
                   }
                 
                   // Look for Peer ID in URL
@@ -521,15 +501,58 @@
                     return found;
                   }
               
+                  function connect() {
+
+                    var b = document.getElementById('connect');
+                    var txt = b.textContent || b.innerText;
+                   
+                    if(txt == "Connect") {
+                      var displayMediaOptions = {
+                        video: true,
+                        audio: true,
+                      };			
+                      getDevices(displayMediaOptions, function() {
+                        initCall();			
+                      });    
+
+                      
+                      cam.disabled = false;
+                      screen.disabled = false;
+                      audio.disabled = false;
+
+                      b.textContent = "Disconnect";
+                      
+                    } else {
+                      video.srcObject.getTracks().forEach( (track) => {
+                        track.stop();
+                      });
+
+                      cam.disabled = true;
+                      screen.disabled = true;
+                      audio.disabled = true;
+
+                      b.textContent = "Connect";
+                    }
+                  }
+
                   // Screen sharing options/calls
-                  function screen() {
+                  function captureScreen() {
                     const displayMediaOptions = {
                       video: {
-                              cursor: "always"
+                        displaySurface: "browser",
                       },
-                      audio: false,
+                      audio: {
+                        suppressLocalAudioPlayback: false,
+                      },
+                      preferCurrentTab: false,
+                      selfBrowserSurface: "exclude",
+                      systemAudio: "include",
+                      surfaceSwitching: "include",
+                      monitorTypeSurfaces: "include",
                     };
               
+   
+
                     try {
                       window.navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
                       .then(stream => {
@@ -540,27 +563,28 @@
                       });                        	                        
               
                     } catch (err) {
-                            console.error(err);
-                                      }			
+                      console.error(err);
+                    }			
+                    
                   }
                   
-                  function camera() {		        
-                          var displayMediaOptions = {
-                            video: true,
-                            audio: true,
+                  function captureCamera() {		        
+                    var displayMediaOptions = {
+                      video: true,
+                      audio: true,
                     };			        
                     
-                          getDevices(displayMediaOptions);		        	
+                    getDevices(displayMediaOptions);		        	
                   }		
               
                   // Audio only calls
-                  function audio() {
+                  function captureAudio() {
                           var displayMediaOptions = {
                             video: false,
                             audio: true,
                     };		
                   
-                          getDevices(displayMediaOptions);			
+                    getDevices(displayMediaOptions);			
                   }		
               
                   // When calling Peer
