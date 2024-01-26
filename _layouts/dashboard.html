@@ -379,6 +379,17 @@
                 <script>
                   var baseUrl = 'https://brett.functions.io/dashboard';
                   var peer = new Peer();
+
+                  /*
+                  var peer = new Peer(
+                    {
+                      host: '34.125.225.4',
+                      port: 9000,
+                      path: 'myapp',
+                      secure: false
+                    }
+                  );
+                  */
                   
                   var canvas = document.querySelector("#mycanvas");
                   var stream = canvas.captureStream(30);
