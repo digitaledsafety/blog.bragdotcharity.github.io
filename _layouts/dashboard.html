@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <script src="/dashboard/stream/assets/ffmpeg/package/dist/umd/ffmpeg.js"></script>
     <script src="/dashboard/stream/assets/util/package/dist/umd/index.js"></script>
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
@@ -378,19 +379,12 @@
                 <div id="recipients"></div>
                 <script>
                   var baseUrl = 'https://brett.functions.io/dashboard';
-                  var peer = new Peer();
-
-                  /*
                   var peer = new Peer(
                     {
-                      host: '34.125.225.4',
+                      host: 'peerjs.digitaleducationsafety.org',
                       port: 9000,
-                      path: 'myapp',
-                      secure: false
                     }
                   );
-                  */
-                  
                   var canvas = document.querySelector("#mycanvas");
                   var stream = canvas.captureStream(30);
                   var context = canvas.getContext("2d", { willReadFrequently: true });
