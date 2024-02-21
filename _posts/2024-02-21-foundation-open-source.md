@@ -2,7 +2,6 @@
 title: Foundation Open Source Project List
 ---
 
-
 We've added an Open Source section to our website! Included is a list of curated, notable projects and methods on how to get started.
 
 Open Source is the past, present, and future of technology. We wouldn't be here without it.
