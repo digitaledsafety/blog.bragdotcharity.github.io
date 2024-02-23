@@ -1,5 +1,6 @@
 ---
 title: Foundation Open Source Project List
+pin: true
 ---
 
 We've added an Open Source section to our website! Included is a list of curated, notable projects and methods on how to get started.
