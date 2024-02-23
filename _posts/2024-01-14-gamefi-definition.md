@@ -1,6 +1,6 @@
 ---
 title: GameFi
-tags: [NFT, blockchain]
+tags: [NFT, blockchain, definitions]
 ---
 
 Tech is always changing, and so is the lingo! This is a new one for me. 👍
