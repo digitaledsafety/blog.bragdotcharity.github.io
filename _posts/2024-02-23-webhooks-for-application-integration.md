@@ -1,6 +1,6 @@
 ---
 title: "Repost: Webhook | Digital Education & Safety Foundation Inc."
-repostlink: "https://digitaleducationsafety.org/definitions/webhook.html"
+repostlink: "https://digitaleducationsafety.org/definitions/webhook"
 tags: [definitions]
 ---
 
