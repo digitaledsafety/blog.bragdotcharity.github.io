@@ -4,7 +4,6 @@ repostlink: "https://digitaleducationsafety.org/definitions/heuristic.html"
 tags: [definitions]
 ---
 
-Similar to, but not quite an algorithm! 🧑‍💻 \
-\
+Similar to, but not quite an algorithm! 🧑‍💻
 
 {% include embed/linkpreview-repost.html %}
