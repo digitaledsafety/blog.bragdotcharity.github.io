@@ -1,6 +1,6 @@
 ---
-title: "Repost: DIGITAL POP! IN 2024"
-repostlink: "https://funko.com/funko-blog-home/digital-pop-in-2024.html"
+title: "Repost: Funko Digital Pop on Droppp"
+repostlink: "https://droppp.io/"
 tags: [NFT, blockchain]
 ---
 
