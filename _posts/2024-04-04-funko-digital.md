@@ -1,5 +1,5 @@
 ---
-title: "Repost: funko.com/funko-blog-home/digital-pop-in-2024.html"
+title: "Repost: DIGITAL POP! IN 2024"
 repostlink: "https://funko.com/funko-blog-home/digital-pop-in-2024.html"
 tags: [NFT, blockchain]
 ---
