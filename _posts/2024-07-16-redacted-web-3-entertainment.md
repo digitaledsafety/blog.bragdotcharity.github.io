@@ -1,6 +1,6 @@
 ---
-title: "Repost: Redacted raises $10M for Web3 entertainment ecosystem | VentureBeat"
-repostlink: "https://venturebeat.com/games/redacted-raises-10m-for-web3-entertainment-ecosystem/"
+title: "Repost: Redacted raises $10M for Web3 entertainment ecosystem"
+repostlink: "https://www.entrepreneur.com/en-ae/news-and-trends/web3-company-redacted-raises-us10-million-in-a-funding/476260"
 tags: [NFT, blockchain]
 ---
 
