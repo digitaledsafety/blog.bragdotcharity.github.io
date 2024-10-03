@@ -1,6 +1,6 @@
 ---
 repostlink: https://support.google.com/adspolicy/answer/14293829?hl=en&ref_topic=29265&sjid=14431064412786115799-US
-tags: [NFT, cryptocurrency, features]
+tags: [NFT, cryptocurrency]
 title: "Repost: Google Ads Cryptocurrency Policy Updates"
 ---
 

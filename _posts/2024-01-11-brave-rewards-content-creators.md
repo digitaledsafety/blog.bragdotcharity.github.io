@@ -1,6 +1,6 @@
 ---
 title: Brave Rewards Content Creators
-tags: [products]
+tags: [blockchain, cryptocurrency]
 image: https://brave.com/static-assets/images/optimized/desktop-hero-screenshot@2x.png
 ---
 
