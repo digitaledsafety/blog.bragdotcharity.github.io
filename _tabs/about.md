@@ -4,7 +4,7 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-🧑‍💻 🚀🎵🍎 Part-time Dad, 37/M/UT/5'5/Single, Thoughts here are my own, not employer's (DoD). Not a financial advisor!
+Thank you for your interest in brag.charity. See our links below for more information on what we do.
 
-- [Our Foundation](https://digitaleducationsafety.org)
-- [My Company](https://functions.io)
+- [Site](https://brag.charity)
+- [Company](https://functions.io)
