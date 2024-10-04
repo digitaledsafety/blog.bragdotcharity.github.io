@@ -15,20 +15,8 @@ layout: compress
 <!-- `site.alt_lang` can specify a language different from the UI -->
 <html lang="{{ site.alt_lang | default: site.lang }}" {{ prefer_mode }}>
   {% include head.html %}
-
-  {%- assign month = "now" | date: "%m" -%} 
-  {% if month == "10" %}
-    {% include bats-styles.html %}
-  {% endif %}
-
   <body>
-
-    {% if month == "10" %}
-      {% include bats.html %}
-    {% endif %}
-
     {% include sidebar.html lang=lang month=month %}
-
     <div id="main-wrapper" class="d-flex justify-content-center">
       <div class="container d-flex flex-column px-xxl-5">
         {% include topbar.html lang=lang %}
