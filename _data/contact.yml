@@ -12,7 +12,7 @@
 
 - type: mastodon
   icon: 'fab fa-mastodon'   # icons powered by <https://fontawesome.com/>
-  url:  'https://mastodon.social/@bragdotcharity'                  # Fill with your Mastodon account page, rel="me" will be applied for verification
+  url:  'https://mastodon.social/@bragcharity'                  # Fill with your Mastodon account page, rel="me" will be applied for verification
 
 
 # Uncomment and complete the url below to enable more contact options
