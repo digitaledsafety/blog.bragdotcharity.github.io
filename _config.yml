@@ -75,7 +75,7 @@ theme_mode: light
 img_cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: /assets/img/logo.jpg
+avatar: https://brag.charity/assets/images/logo.gif
 
 # boolean type, the global switch for TOC in posts.
 toc: true
