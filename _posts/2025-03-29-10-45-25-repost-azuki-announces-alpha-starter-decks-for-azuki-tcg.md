@@ -1,5 +1,5 @@
 ---
-title: "Repost: Repost: Azuki Announces Alpha Starter Decks for Azuki TCG"
+title: "Repost: Azuki Announces Alpha Starter Decks for Azuki TCG"
 repostlink: "https://nftinsider.io/azuki-announces-alpha-starter-decks-for-azuki-tcg/"
 tags: [NFT,blockchain,gamefi]
 ---
