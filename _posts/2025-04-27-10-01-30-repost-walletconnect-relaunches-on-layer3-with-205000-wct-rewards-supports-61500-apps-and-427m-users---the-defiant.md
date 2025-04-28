@@ -1,5 +1,5 @@
 ---
-title: "Repost: WalletConnect Relaunches on Layer3 With 205,000 WCT Rewards, Supports 61,500+ Apps and 42.7M Users - "The Defiant""
+title: "Repost: WalletConnect Relaunches on Layer3 With 205,000 WCT Rewards, Supports 61,500+ Apps and 42.7M Users - \"The Defiant\""
 repostlink: "https://thedefiant.io/news/nfts-and-web3/walletconnect-relaunches-on-layer3-205000-wct-rewards-supports-61500-apps-42-7m-faa73f2c"
 tags: [NFT,blockchain]
 ---
