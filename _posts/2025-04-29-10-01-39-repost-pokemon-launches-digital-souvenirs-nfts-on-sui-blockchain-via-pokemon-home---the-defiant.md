@@ -1,5 +1,5 @@
 ---
-title: "Repost: Pokemon Launches 'Digital Souvenirs' NFTs on Sui Blockchain via Pokemon HOME - "The Defiant""
+title: "Repost: Pokemon Launches 'Digital Souvenirs' NFTs on Sui Blockchain via Pokemon HOME - \"The Defiant\""
 repostlink: "https://thedefiant.io/news/nfts-and-web3/pokemon-launches-digital-souvenirs-nfts-on-sui-blockchain-via-pokemon-home-ba88acf0"
 tags: [NFT,blockchain]
 ---
