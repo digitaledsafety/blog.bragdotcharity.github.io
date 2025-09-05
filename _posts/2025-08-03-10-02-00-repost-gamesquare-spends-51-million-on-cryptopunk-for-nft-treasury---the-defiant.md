@@ -1,5 +1,5 @@
 ---
-title: "Repost: GameSquare Spends $5.1 Million on CryptoPunk for NFT Treasury - "The Defiant""
+title: "Repost: GameSquare Spends $5.1 Million on CryptoPunk for NFT Treasury - \"The Defiant\""
 repostlink: "https://thedefiant.io/news/nfts-and-web3/gamesquare-buys-cryptopunk-5577-for-nft-treasury"
 tags: [NFT,blockchain]
 ---
