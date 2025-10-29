@@ -1,5 +1,5 @@
 ---
-title: "Repost: Base Overtakes Solana in NFT Volume as Zora Drives Minting Frenzy - "The Defiant""
+title: "Repost: Base Overtakes Solana in NFT Volume as Zora Drives Minting Frenzy - The Defiant"
 repostlink: "https://thedefiant.io/news/nfts-and-web3/base-overtakes-solana-in-nft-volume-as-zora-drives-minting-frenzy"
 tags: [NFT,blockchain]
 ---
