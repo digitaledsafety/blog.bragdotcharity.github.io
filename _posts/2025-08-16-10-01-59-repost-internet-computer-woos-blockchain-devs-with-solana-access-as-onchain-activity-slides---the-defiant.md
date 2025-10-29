@@ -1,5 +1,5 @@
 ---
-title: "Repost: Internet Computer Woos Blockchain Devs with Solana Access as Onchain Activity Slides - "The Defiant""
+title: "Repost: Internet Computer Woos Blockchain Devs with Solana Access as Onchain Activity Slides - The Defiant"
 repostlink: "https://thedefiant.io/news/blockchains/internet-computer-woos-blockchain-devs-with-solana-access-amid-dwindling-onchain-activity"
 tags: [NFT,blockchain]
 ---
