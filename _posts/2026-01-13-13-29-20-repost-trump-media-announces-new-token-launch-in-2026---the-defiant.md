@@ -1,5 +1,5 @@
 ---
-title: "Repost: Trump Media Announces New Token Launch in 2026 - The Defiant""
+title: "Repost: Trump Media Announces New Token Launch in 2026 - The Defiant"
 repostlink: "https://thedefiant.io/news/tokens/trump-media-announces-new-token-launch-in-2026"
 tags: [NFT,blockchain]
 ---
