@@ -1,5 +1,5 @@
 ---
-title: "Repost: NFT storage: How NFT artwork can literally disappear" if you're not careful | Hedera"
+title: "Repost: NFT storage: How NFT artwork can literally disappear if you're not careful | Hedera"
 repostlink: "https://hedera.com/blog/nft-storage-why-it-matters/"
 tags: [NFT,blockchain]
 ---
