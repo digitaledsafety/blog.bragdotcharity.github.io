@@ -1,5 +1,5 @@
 ---
-title: "Repost: Moonbirds Debuts BIRB Token on Solana at $200M FDV - The Defiant""
+title: "Repost: Moonbirds Debuts BIRB Token on Solana at $200M FDV - The Defiant"
 repostlink: "https://thedefiant.io/news/nfts-and-web3/moonbirds-debuts-birb-token-tge"
 tags: [NFT,blockchain]
 ---
