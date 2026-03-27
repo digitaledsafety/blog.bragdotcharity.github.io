@@ -1,1 +1,3 @@
-{% linkpreview {{ page.repostlink }} %}
+{% if page.repostlink %}
+  {% include repost-item.html %}
+{% endif %}

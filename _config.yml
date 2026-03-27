@@ -4,7 +4,6 @@
 theme: jekyll-theme-chirpy
 
 plugins:
-  - jekyll-linkpreview
   - jekyll-seo-tag
   - jekyll-feed
 
