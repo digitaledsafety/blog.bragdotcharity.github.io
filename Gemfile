@@ -6,6 +6,7 @@ gem "jekyll-theme-chirpy", "~> 6.2", ">= 6.2.3"
 gem "google-protobuf"
 
 
+gem "jekyll-linkpreview"
 gem "jekyll-seo-tag"
 gem "jekyll-feed"
 
