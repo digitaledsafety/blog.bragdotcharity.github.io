@@ -6,8 +6,8 @@ tags: [NFT, games]
 
 Play a Doom clone on Bitcoin (Ordinals)!
 
-{% linkpreview "https://ordinals.com/inscription/521f8eccffa4c41a3a7728dd012ea5a4a02feed81f41159231251ecf1e5c79dai0" %}
+{% include repost-item.html url="https://ordinals.com/inscription/521f8eccffa4c41a3a7728dd012ea5a4a02feed81f41159231251ecf1e5c79dai0" %}
 
 Source:
 
-{% linkpreview "https://blockworks.co/news/play-doom-bitcoin" %}
+{% include repost-item.html url="https://blockworks.co/news/play-doom-bitcoin" %}

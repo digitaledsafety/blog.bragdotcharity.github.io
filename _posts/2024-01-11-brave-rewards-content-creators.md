@@ -6,4 +6,4 @@ image: https://brave.com/static-assets/images/optimized/desktop-hero-screenshot@
 
 Brave is web browsing re-imagined with a focus on performance and supporting creators! 💪
 
-{% linkpreview "https://brave.com/tips/" %}
+{% include repost-item.html url="https://brave.com/tips/" %}

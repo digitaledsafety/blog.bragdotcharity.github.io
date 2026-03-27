@@ -12,4 +12,4 @@ An immersive, fun way to socialize with VR/Web 3 enthusiasts while viewing digit
 
 You can make your own (and view others) at the link below! 👍
 
-{% linkpreview "https://hubs.mozilla.com/labs/5-incredible-art-galleries/" %}
+{% include repost-item.html url="https://hubs.mozilla.com/labs/5-incredible-art-galleries/" %}
