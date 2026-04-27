@@ -1,5 +1,5 @@
 ---
-title: "? Autonomous AI on the Blockchain: Inside Virtuals Protocol | NFT News Today"
+title: "🔃 Autonomous AI on the Blockchain: Inside Virtuals Protocol | NFT News Today"
 repostlink: "https://nftnewstoday.com/2025/09/18/autonomous-ai-on-the-blockchain-inside-virtuals-protocol"
 tags: [NFT,blockchain]
 ---

@@ -1,5 +1,5 @@
 ---
-title: "? Walmart's OnePay Adds a Dozen New Cryptos to Nascent Superapp Offering"
+title: "🔃 Walmart's OnePay Adds a Dozen New Cryptos to Nascent Superapp Offering"
 repostlink: "https://cointelegraph.com/news/walmart-backed-onepay-adds-a-dozen-new-tokens-in-push-to-serve-new-to-crypto-customers"
 tags: [NFT,blockchain]
 ---

@@ -1,5 +1,5 @@
 ---
-title: "? Nefarious Werewolf Society Is Minting Today ? 10,000 Ethereum NFTs Launch on Q2's First Day - NFT Plazas"
+title: "🔃 Nefarious Werewolf Society Is Minting Today ? 10,000 Ethereum NFTs Launch on Q2's First Day - NFT Plazas"
 repostlink: "https://nftplazas.com/nefarious-werewolf-society-nft-mint-april-2026/"
 tags: [NFT,blockchain]
 ---

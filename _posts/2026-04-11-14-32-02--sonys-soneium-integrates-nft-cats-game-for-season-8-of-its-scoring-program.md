@@ -1,5 +1,5 @@
 ---
-title: "? Sony?s Soneium Integrates NFT Cats Game for Season 8 of Its Scoring Program"
+title: "🔃 Sony's Soneium Integrates NFT Cats Game for Season 8 of Its Scoring Program"
 repostlink: "https://nftcalendar.io/news/sonys-soneium-integrates-nft-cats-game-for-season-8-of-its-scoring-program/"
 tags: [NFT,blockchain]
 ---

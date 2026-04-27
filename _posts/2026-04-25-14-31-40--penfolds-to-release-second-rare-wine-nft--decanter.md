@@ -1,5 +1,5 @@
 ---
-title: "? Penfolds to release second rare wine NFT | Decanter"
+title: "🔃 Penfolds to release second rare wine NFT | Decanter"
 repostlink: "https://www.decanter.com/wine-news/penfolds-to-release-second-rare-wine-nft-472517/"
 tags: [NFT,blockchain]
 ---

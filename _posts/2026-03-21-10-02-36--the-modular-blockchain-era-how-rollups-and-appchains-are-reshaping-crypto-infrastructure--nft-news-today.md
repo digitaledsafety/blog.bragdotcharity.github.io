@@ -1,5 +1,5 @@
 ---
-title: "? The Modular Blockchain Era: How Rollups and Appchains Are Reshaping Crypto Infrastructure | NFT News Today"
+title: "🔃 The Modular Blockchain Era: How Rollups and Appchains Are Reshaping Crypto Infrastructure | NFT News Today"
 repostlink: "https://nftnewstoday.com/2026/03/09/the-modular-blockchain-era-how-rollups-and-appchains-are-reshaping-crypto-infrastructure"
 tags: [NFT,blockchain]
 ---

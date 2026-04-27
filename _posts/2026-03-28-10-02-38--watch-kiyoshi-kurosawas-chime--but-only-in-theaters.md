@@ -1,5 +1,5 @@
 ---
-title: "? Watch Kiyoshi Kurosawa's 'Chime' ? but Only in Theaters"
+title: "🔃 Watch Kiyoshi Kurosawa's 'Chime' ? but Only in Theaters"
 repostlink: "https://www.indiewire.com/features/commentary/watch-kiyoshi-kurosawa-chime-only-in-theaters-1235186067/"
 tags: [NFT,blockchain]
 ---

@@ -1,5 +1,5 @@
 ---
-title: "? Checking In On Somnium Space, The Blockchain-Based PC Social VR Platform"
+title: "🔃 Checking In On Somnium Space, The Blockchain-Based PC Social VR Platform"
 repostlink: "https://www.uploadvr.com/checking-in-on-somnium-space/"
 tags: [NFT,blockchain]
 ---

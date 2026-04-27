@@ -1,5 +1,5 @@
 ---
-title: "? Pudgy Penguins Unveils Pengu Card as Mystery Box Redemption Goes Live"
+title: "🔃 Pudgy Penguins Unveils Pengu Card as Mystery Box Redemption Goes Live"
 repostlink: "https://nftcalendar.io/news/pudgy-penguins-unveils-pengu-card-as-mystery-box-redemption-goes-live/"
 tags: [NFT,blockchain]
 ---

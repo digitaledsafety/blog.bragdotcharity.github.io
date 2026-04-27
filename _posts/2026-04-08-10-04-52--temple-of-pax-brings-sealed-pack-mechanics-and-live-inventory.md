@@ -1,5 +1,5 @@
 ---
-title: "? Temple of Pax Brings Sealed Pack Mechanics and Live Inventory"
+title: "🔃 Temple of Pax Brings Sealed Pack Mechanics and Live Inventory"
 repostlink: "https://nftevening.com/temple-of-pax-brings-sealed-pack-mechanics-and-live-inventory/?utm_source=rss&utm_medium=rss&utm_campaign=temple-of-pax-brings-sealed-pack-mechanics-and-live-inventory"
 tags: [NFT,blockchain]
 ---

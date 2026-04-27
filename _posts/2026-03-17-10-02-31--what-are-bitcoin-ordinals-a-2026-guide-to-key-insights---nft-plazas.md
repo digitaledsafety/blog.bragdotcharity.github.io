@@ -1,5 +1,5 @@
 ---
-title: "? What Are Bitcoin Ordinals? A 2026 Guide to Key Insights - NFT Plazas"
+title: "🔃 What Are Bitcoin Ordinals? A 2026 Guide to Key Insights - NFT Plazas"
 repostlink: "https://nftplazas.com/what-are-bitcoin-ordinals/"
 tags: [NFT,blockchain]
 ---

@@ -1,5 +1,5 @@
 ---
-title: "? How to buy an NFT in 2026: A complete beginner's guide"
+title: "🔃 How to buy an NFT in 2026: A complete beginner's guide"
 repostlink: "https://www.msn.com/en-us/money/smallbusiness/how-to-buy-an-nft-in-2026-a-complete-beginner-s-guide/ar-AA1ZWUIl"
 tags: [NFT,blockchain]
 ---

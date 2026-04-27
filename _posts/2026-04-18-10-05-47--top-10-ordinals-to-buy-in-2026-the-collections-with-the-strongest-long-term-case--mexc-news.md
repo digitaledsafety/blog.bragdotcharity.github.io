@@ -1,5 +1,5 @@
 ---
-title: "? Top 10 Ordinals to Buy in 2026: The Collections With the Strongest Long-Term Case | MEXC News"
+title: "🔃 Top 10 Ordinals to Buy in 2026: The Collections With the Strongest Long-Term Case | MEXC News"
 repostlink: "https://www.mexc.co/en-PH/news/997422"
 tags: [NFT,blockchain]
 ---

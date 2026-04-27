@@ -1,5 +1,5 @@
 ---
-title: "? Hybrid music collectibles: NFTs and physical relics merging in 2026"
+title: "🔃 Hybrid music collectibles: NFTs and physical relics merging in 2026"
 repostlink: "https://www.msn.com/en-us/news/technology/hybrid-music-collectibles-nfts-and-physical-relics-merging-in-2026/ar-AA1ZggCg?ocid=BingNewsVerp"
 tags: [NFT,blockchain]
 ---

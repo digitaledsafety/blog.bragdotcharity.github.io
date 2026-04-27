@@ -1,5 +1,5 @@
 ---
-title: "? NFT Gaming Market Is Booming So Rapidly | Major Giants Ubisoft,"
+title: "🔃 NFT Gaming Market Is Booming So Rapidly | Major Giants Ubisoft,"
 repostlink: "https://www.openpr.com/news/4446401/nft-gaming-market-is-booming-so-rapidly-major-giants-ubisoft"
 tags: [NFT,blockchain]
 ---

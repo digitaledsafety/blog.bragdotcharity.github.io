@@ -1,5 +1,5 @@
 ---
-title: "? Woman-Founded and Led Solana Project Kokopi Koalas Launches $KOKOP Token and NFT Project | HackerNoon"
+title: "🔃 Woman-Founded and Led Solana Project Kokopi Koalas Launches $KOKOP Token and NFT Project | HackerNoon"
 repostlink: "https://hackernoon.com/woman-founded-and-led-solana-project-kokopi-koalas-launches-$kokop-token-and-nft-project"
 tags: [NFT,blockchain]
 ---

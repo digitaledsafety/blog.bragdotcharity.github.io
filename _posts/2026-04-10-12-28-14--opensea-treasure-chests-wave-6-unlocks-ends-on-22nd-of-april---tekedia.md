@@ -1,5 +1,5 @@
 ---
-title: "? OpenSea Treasure Chests Wave 6 Unlocks, Ends on 22nd of April - Tekedia"
+title: "🔃 OpenSea Treasure Chests Wave 6 Unlocks, Ends on 22nd of April - Tekedia"
 repostlink: "https://www.tekedia.com/opensea-treasure-chests-wave-6-unlocks-ends-on-22nd-of-april/"
 tags: [NFT,blockchain]
 ---

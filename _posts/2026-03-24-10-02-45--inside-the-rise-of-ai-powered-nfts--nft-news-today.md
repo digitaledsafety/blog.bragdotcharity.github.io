@@ -1,5 +1,5 @@
 ---
-title: "? Inside the Rise of AI-Powered NFTs | NFT News Today"
+title: "🔃 Inside the Rise of AI-Powered NFTs | NFT News Today"
 repostlink: "https://nftnewstoday.com/2025/10/27/how-ai-is-powering-the-next-generation-of-nfts"
 tags: [NFT,blockchain]
 ---

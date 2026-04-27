@@ -1,5 +1,5 @@
 ---
-title: "? The Sandbox Partners G-SHOCK to Launch Virtual Sky Race Competition"
+title: "🔃 The Sandbox Partners G-SHOCK to Launch Virtual Sky Race Competition"
 repostlink: "https://nftcalendar.io/news/the-sandbox-partners-g-shock-to-launch-virtual-sky-race-competition/"
 tags: [NFT,blockchain]
 ---

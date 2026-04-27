@@ -1,5 +1,5 @@
 ---
-title: "? The Best NFT Sales of the Week: Flying Tulip PUT"
+title: "🔃 The Best NFT Sales of the Week: Flying Tulip PUT"
 repostlink: "https://en.cryptonomist.ch/2026/03/16/the-top-nft-sales-of-the-week-flying-tulip-put-leads-the-market/"
 tags: [NFT,blockchain]
 ---

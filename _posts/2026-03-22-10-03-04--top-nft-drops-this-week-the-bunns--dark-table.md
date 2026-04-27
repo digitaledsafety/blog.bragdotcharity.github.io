@@ -1,5 +1,5 @@
 ---
-title: "? Top NFT Drops This Week: The Bunns & Dark Table"
+title: "🔃 Top NFT Drops This Week: The Bunns & Dark Table"
 repostlink: "https://nftplazas.com/top-nft-drops-the-bunns-dark-table-ethereum-update/"
 tags: [NFT,blockchain]
 ---

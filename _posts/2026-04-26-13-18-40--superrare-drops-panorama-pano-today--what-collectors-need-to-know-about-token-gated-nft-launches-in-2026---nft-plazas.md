@@ -1,5 +1,5 @@
 ---
-title: "? SuperRare Drops Panorama ($PANO) Today ? What Collectors Need to Know About Token-Gated NFT Launches in 2026 - NFT Plazas"
+title: "🔃 SuperRare Drops Panorama ($PANO) Today ? What Collectors Need to Know About Token-Gated NFT Launches in 2026 - NFT Plazas"
 repostlink: "https://nftplazas.com/superrare-panorama-pano-token-launch-genesis-nft-auction-recap/"
 tags: [NFT,blockchain]
 ---

@@ -1,5 +1,5 @@
 ---
-title: "? Pudgy Penguins Launches New Collection in Partnership With Asset Manager VanEck"
+title: "🔃 Pudgy Penguins Launches New Collection in Partnership With Asset Manager VanEck"
 repostlink: "https://nftcalendar.io/news/pudgy-penguins-launches-new-collection-with-asset-manager-vanEck/"
 tags: [NFT,blockchain]
 ---
