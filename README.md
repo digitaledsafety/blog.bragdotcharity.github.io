@@ -1,3 +1,5 @@
+> **No longer maintained.** This repository is no longer maintained. The live site is at https://blog.brag.charity. Active development now happens in the [foundation monorepo on GitLab](https://gitlab.com/desf-group/foundation).
+
 # Chirpy Starter
 
 [![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy)][gem]&nbsp;
